@@ -11,8 +11,12 @@ def call_get_users():
 
 # Calling the function to create a user
 @app.post("/api/users")
-def call_create_users():
+def call_create_user():
     return users.create_user()
+
+@app.patch("/api/users")
+def call_update_user():
+    return users.update_user()
 
 # Calling the function to delete a user
 @app.delete("/api/users")
