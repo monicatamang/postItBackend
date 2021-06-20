@@ -1,7 +1,7 @@
 from flask import Flask, request, Response
 from users import get_users, create_user, update_user, delete_user
 from login import create_login, delete_login
-from follow import create_follow
+from follow import create_follow, get_follows
 import sys
 
 app = Flask(__name__)
@@ -35,6 +35,11 @@ def call_create_login():
 @app.delete("/api/login")
 def call_delete_login():
     return delete_login.logout_user()
+
+# Calling the function to get all follows
+@app.get("/api/follows")
+def call_get_follows():
+    return get_follows.get_all_follows()
 
 # Calling the function to follow a user
 @app.post("/api/follows")
