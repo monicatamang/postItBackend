@@ -3,10 +3,11 @@ import traceback
 import dbstatements
 import json
 
-# Getting all users or one user from the database
+# Creating a function to get all users or one user from the database
 def get_users():
     try:
         user_id = request.args.get('userId')
+        # If the user id is valid, convert it into an integer
         if(user_id != None):
             user_id = int(user_id)
     except IndexError:
@@ -15,8 +16,8 @@ def get_users():
         return Response("Invalid id.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
-        print("Key Error. Incorrect Key name of data.")
-        return Response("Invalid id.", mimetype="text/plain", status=400)
+        print("Key Error. Incorrect or missing key.")
+        return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except UnboundLocalError:
         traceback.print_exc()
         print("Data Error. Referencing variables that are not declared.")
@@ -32,7 +33,7 @@ def get_users():
     except:
         traceback.print_exc()
         print("An error has occured.")
-        return Response("Invalid id.", mimetype="text/plain", status=400)
+        return Response("Failed to get users.", mimetype="text/plain", status=400)
 
     # If a user id is not sent, send all users back
     if(user_id == None):
@@ -89,7 +90,7 @@ def get_users():
             except UnboundLocalError:
                 traceback.print_exc()
                 print("Data Error. Referencing variables that are not declared.")
-                return Response("Invalid id.", mimetype="text/plain", status=500)
+                return Response(f"Failed to get user with id of {user_id}.", mimetype="text/plain", status=500)
             except TypeError:
                 traceback.print_exc()
                 print("Data Error. Invalid data type sent to the database.")
@@ -101,3 +102,4 @@ def get_users():
             except:
                 traceback.print_exc()
                 print("An error has occured.")
+                return Response(f"Failed to get user with id of {user_id}.", mimetype="text/plain", status=500)

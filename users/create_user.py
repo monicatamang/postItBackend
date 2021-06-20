@@ -4,7 +4,7 @@ import dbstatements
 import json
 import user_token
 
-# Creating a user
+# Creating a function to create a new user
 def create_user():
     # Receiving the data from the user
     try:
@@ -20,7 +20,7 @@ def create_user():
         return Response("Invalid data.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
-        print("Key Error. Incorrect Key name of data.")
+        print("Key Error. Incorrect or missing key.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except UnboundLocalError:
         traceback.print_exc()
@@ -37,7 +37,7 @@ def create_user():
     except:
         traceback.print_exc()
         print("An error has occured.")
-        return Response("Invalid id.", mimetype="text/plain", status=400)
+        return Response("Failed to create user.", mimetype="text/plain", status=400)
 
     # If the username, email, password or birthdate is not received, send a client error response
     if(username == None or email == None or password == None or birthdate == None):
@@ -46,13 +46,13 @@ def create_user():
     # Inserting the user's data into the database and getting the new user's id
     user_id = dbstatements.run_insert_statement("INSERT INTO users(username, email, password, bio, birthdate, image_url) VALUES(?, ?, ?, ?, ?, ?)", [username, email, password, bio, birthdate, image_url])
 
-    # If user's id was not created, send a server error response
+    # If user's id is not created, send a server error response
     if(user_id == None):
         return Response("Database Error. Failed to create a user.", mimetype="text/plain", status=500)
-    # If the user's id was created, create a token 
+    # If the user's id is created, create a token 
     else:
         token = user_token.get_user_token(user_id)
-        # If the token was created, send the user their data
+        # If the token is created, send the user their data
         if(token != None):
             user_data = {
                 'userId': user_id,
@@ -68,6 +68,6 @@ def create_user():
             user_data_json = json.dumps(user_data, default=str)
             # Send a client success response
             return Response(user_data_json, mimetype="application/json", status=201)
-        # If the token was not created, send a server error response
+        # If the token is not created, send a server error response
         else:
             return Response("Invalid Data.", mimetype="text/plain", status=500)

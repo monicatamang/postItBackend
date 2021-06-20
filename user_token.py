@@ -9,7 +9,7 @@ def get_user_token(user_id):
     # Open database and create a cursor
     conn = dbconnect.open_db_connection()
     cursor = dbconnect.create_db_cursor(conn)
-    # Initalize the result to None
+    # Initalize the result to None and create a token
     result = None
     token = secrets.token_urlsafe(60)
 
@@ -18,7 +18,7 @@ def get_user_token(user_id):
     if(check_database == False):
         return Response("Database connection failed.", mimetype="text/plain", status=500)
 
-    # Try to run the SELECT statement with the query and params passed in
+    # Try to to insert the new token into the database
     try:
         cursor.execute("INSERT INTO user_session(user_id, token) VALUES(?, ?)", [user_id, token])
         conn.commit()
@@ -44,8 +44,9 @@ def get_user_token(user_id):
 
     # Closing the cursor and database connection
     dbcheck.close_db_connection_and_cursor(conn, cursor)
-    # Return the result
+    # If a new row is created in the 'user_session' table, return the token
     if(result == 1):
         return token
+    # If a new row is not created, return None
     else:
         return None

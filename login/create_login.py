@@ -4,7 +4,7 @@ import dbstatements
 import json
 import user_token
 
-# Logging in user
+# Creating a function to logs in a user
 def login_user():
     # Trying to log the user in with their email and password
     try:
@@ -16,7 +16,7 @@ def login_user():
         return Response("Invalid data.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
-        print("Key Error. Incorrect Key name of data.")
+        print("Key Error. Incorrect key.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except UnboundLocalError:
         traceback.print_exc()
@@ -33,7 +33,7 @@ def login_user():
     except:
         traceback.print_exc()
         print("An error has occured.")
-        return Response("Invalid id.", mimetype="text/plain", status=400)
+        return Response("Invalid email and/or password.", mimetype="text/plain", status=400)
 
     # If the user did not send an eamil or password, send a server error response
     if(email == "" or password == ""):
@@ -41,39 +41,10 @@ def login_user():
 
     # Check if the user's email and password matches with the database records
     db_records = dbstatements.run_select_statement("SELECT id, email, username, bio, birthdate, image_url FROM users WHERE email = ? AND password = ?", [email, password])
-    # If no records are found, send a server error response
-    if(db_records == None):
-        return Response("Failed to login.", mimetype="text/plain", status=500)
-    # If a record is found, create a login token
-    else:
-        # Catching error with a try-except block 
-        try:
-            token = user_token.get_user_token(db_records[0][0])
-        except IndexError:
-            traceback.print_exc()
-            print("Token does not exist in the database.")
-            return Response("Invalid data.", mimetype="text/plain", status=400)
-        except KeyError:
-            traceback.print_exc()
-            print("Key Error. Incorrect key.")
-            return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
-        except UnboundLocalError:
-            traceback.print_exc()
-            print("Data Error. Referencing variables that are not declared.")
-            return Response("Invalid data.", mimetype="text/plain", status=400)
-        except TypeError:
-            traceback.print_exc()
-            print("Data Error. Invalid data type sent to the database.")
-            return Response("Invalid data.", mimetype="text/plain", status=400)
-        except ValueError:
-            traceback.print_exc()
-            print("Invalid data was sent to the database.")
-            return Response("Invalid data.", mimetype="text/plain", status=400)
-        except:
-            traceback.print_exc()
-            print("An error has occured.")
-            return Response("Invalid id.", mimetype="text/plain", status=400)
-
+    
+    # If their email and password matches, create a login token
+    if(len(db_records) == 1):
+        token = user_token.get_user_token(db_records[0][0])
         # If a login token is made, send the user their data with the login token
         if(token != None):
             user_data = {
@@ -92,3 +63,6 @@ def login_user():
         # If a login token is not created, send a server error response
         else:
             return Response("Failed to log in.", mimetype="text/plain", status=500)
+    # If their email and password does not match, send a server error response
+    else:
+        return Response("Failed to log in.", mimetype="text/plain", status=500)
