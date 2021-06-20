@@ -36,7 +36,7 @@ def follow_user():
     # Getting the user id of the user who is currently logged in
     user_id = dbstatements.run_select_statement("SELECT user_id FROM user_session WHERE token = ?", [login_token,])
     
-    # If the user id is able to be retrieved from the database, insert the user id and follow id into the database
+    # If the user id is retrieved from the database, insert the user id and follow id into the database
     if(len(user_id) == 1):
         is_id_created = dbstatements.run_insert_statement("INSERT INTO follow(follower_id, follow_id) VALUES(?, ?)", [user_id[0][0], follow_id])
         # If a new id in the 'follow' table is not created, send a server error response
@@ -45,6 +45,6 @@ def follow_user():
         # If a new id is created, send a client success response
         else:
             return Response(f"Successfully followed user with an of {follow_id}.", mimetype="text/plain", status=204)
-    # If the user id was not able to be retrieved from the database, send a server error response
+    # If the user id was not retrieved from the database, send a server error response
     else:
         return Response("User not logged in.", mimetype="text/plain", status=500)
