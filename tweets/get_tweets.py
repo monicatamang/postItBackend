@@ -9,7 +9,6 @@ def get_tweets():
     try:
         user_id = request.args.get('userId')
         tweet_id = request.args.get('tweetId')
-
         # If the user sends a user id, convert it into an integer
         if(user_id != None):
             user_id = int(user_id)
