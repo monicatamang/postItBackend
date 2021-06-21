@@ -90,7 +90,7 @@ def update_user():
         # If the updated data is not retrieved from the database, send a server error response
         if(db_updated_records == None):
             return Response("Failed to update user.", mimetype="application/json", status=500)
-        # If the updated data is retreived from the database, send the updated data
+        # If the updated data is retreived from the database, send the updated data as a dictionary
         else:
             updated_data = {
                 'userId': db_updated_records[0][0],

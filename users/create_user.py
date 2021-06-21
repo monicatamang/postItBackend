@@ -52,7 +52,7 @@ def create_user():
     # If the user's id is created, create a token 
     else:
         token = user_token.get_user_token(user_id)
-        # If the token is created, send the user their data
+        # If the token is created, send the user their data as a dictionary
         if(token != None):
             user_data = {
                 'userId': user_id,

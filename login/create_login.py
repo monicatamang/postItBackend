@@ -45,7 +45,7 @@ def login_user():
     # If their email and password matches, create a login token
     if(len(db_records) == 1):
         token = user_token.get_user_token(db_records[0][0])
-        # If a login token is made, send the user their data with the login token
+        # If a login token is made, send the user their data with the login token as a dictionary
         if(token != None):
             user_data = {
                 'user_id': db_records[0][0],

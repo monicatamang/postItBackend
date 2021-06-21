@@ -3,8 +3,8 @@ import traceback
 import dbstatements
 import json
 
-# Creating a function to get a list of all follows
-def get_all_follows():
+# Creating a function to get a list of all followers
+def get_all_followers():
     # Trying to get user data
     try:
         user_id = int(request.args['userId'])
@@ -33,26 +33,26 @@ def get_all_follows():
         print("An error has occured.")
         return Response("Failed to follow user.", mimetype="text/plain", status=400)
 
-    # Getting all the user's follows
-    follows = dbstatements.run_select_statement("SELECT u.id, u.email, u.username, u.bio, u.birthdate, u.image_url FROM users u INNER JOIN follow f ON u.id = f.follow_id WHERE f.follower_id = ?", [user_id,])
+    # Getting all the user's followers
+    followers = dbstatements.run_select_statement("SELECT u.id, u.email, u.username, u.bio, u.birthdate, u.image_url FROM users u INNER JOIN follow f on u.id = f.follower_id WHERE f.follow_id = ?", [user_id,])
     
-    # If the list of follows is not found in the database, send a server error response
-    if(follows == None):
+    # If the list of followers is not found in the database, send a server error response
+    if(followers == None):
         return Response("Failed to get all follows.", mimetype="text/plain", status=500)
-    # If the list of follows is found in the database, send the data for each follow as list of dictionaries
+    # If the list of followers is found in the database, send the data for each follower as a list of dictionaries
     else:
-        user_follows = []
-        for follow in follows:
-            each_follow = {
-                'userId': follow[0],
-                'email': follow[1],
-                'username': follow[2],
-                'bio': follow[3],
-                'birthdate': follow[4],
-                'imageUrl': follow[5]
+        user_followers = []
+        for follower in followers:
+            each_follower = {
+                'userId': follower[0],
+                'email': follower[1],
+                'username': follower[2],
+                'bio': follower[3],
+                'birthdate': follower[4],
+                'imageUrl': follower[5]
             }
-            user_follows.append(each_follow)
+            user_followers.append(each_follower)
         # Convert data into JSON
-        user_follows_json = json.dumps(user_follows, default=str)
+        user_followers_json = json.dumps(user_followers, default=str)
         # Send JSON data and a client success response
-        return Response(user_follows_json, mimetype="application/json", status=200)
+        return Response(user_followers_json, mimetype="application/json", status=200)

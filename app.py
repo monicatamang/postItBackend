@@ -2,6 +2,7 @@ from flask import Flask, request, Response
 from users import get_users, create_user, update_user, delete_user
 from login import create_login, delete_login
 from follows import create_follow, get_follows, delete_follow
+from followers import get_followers
 import sys
 
 app = Flask(__name__)
@@ -50,6 +51,11 @@ def call_follow_user():
 @app.delete("/api/follows")
 def call_unfollow_user():
     return delete_follow.unfollow_user()
+
+# Calling the function to get all followers
+@app.get("/api/followers")
+def call_get_followers():
+    return get_followers.get_all_followers()
 
 # Creating a mode
 if(len(sys.argv) > 1):
