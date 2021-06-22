@@ -42,7 +42,7 @@ def get_tweets():
 
     # If the tweets are not retrieved from the database, send a server error response
     if(tweets == None):
-        return Response("Failed to retrieve all tweets.", mimetype="text/plain", status=500)
+        return Response("Failed to retrieve tweets.", mimetype="text/plain", status=500)
     # If the tweets are retrieved from the database, send tweets as a list of dictionaries
     else:
         tweets_list = []

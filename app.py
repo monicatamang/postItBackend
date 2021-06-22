@@ -5,6 +5,7 @@ from follows import create_follow, get_follows, delete_follow
 from followers import get_followers
 from tweets import get_tweets, create_tweet, delete_tweet, update_tweet
 from tweet_likes import get_tweet_likes, create_tweet_like, delete_tweet_like
+from comments import get_comments
 import sys
 
 app = Flask(__name__)
@@ -93,6 +94,11 @@ def call_create_tweet_likes():
 @app.delete("/api/tweet-likes")
 def call_delete_tweet_like():
     return delete_tweet_like.unlike_tweet()
+
+# Calling the function to get all comments on a tweet
+@app.get("/api/comments")
+def call_get_comments():
+    return get_comments.get_comments()
 
 # Creating a mode
 if(len(sys.argv) > 1):
