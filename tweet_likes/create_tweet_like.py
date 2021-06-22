@@ -3,7 +3,7 @@ import traceback
 import dbstatements
 
 # Creating a function that creates a like on a tweet
-def create_tweet_like():
+def like_tweet():
     # Trying to the get the user's login token and tweet id
     try:
         login_token = request.json['loginToken']
