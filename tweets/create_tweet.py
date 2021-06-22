@@ -9,26 +9,10 @@ def post_tweet():
     try:
         login_token = request.json['loginToken']
         content = request.json['content']
-    except IndexError:
-        traceback.print_exc()
-        print("Login token and/or tweet content does not exist in the database.")
-        return Response("User and/or tweet does not exist.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
-    except UnboundLocalError:
-        traceback.print_exc()
-        print("Data Error. Referencing variables that are not declared.")
-        return Response("Invalid data.", mimetype="text/plain", status=400)
-    except TypeError:
-        traceback.print_exc()
-        print("Data Error. Invalid data type sent to the database.")
-        return Response("Invalid data.", mimetype="text/plain", status=400)
-    except ValueError:
-        traceback.print_exc()
-        print("Invalid data was sent to the database.")
-        return Response("Invalid data.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
         print("An error has occured.")

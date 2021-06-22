@@ -22,10 +22,6 @@ def update_user():
         traceback.print_exc()
         print("Key Error. Incorrect Key name of data.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
-    except UnboundLocalError:
-        traceback.print_exc()
-        print("Data Error. Referencing variables that are not declared.")
-        return Response("Invalid data.", mimetype="text/plain", status=400)
     except TypeError:
         traceback.print_exc()
         print("Data Error. Invalid data type sent to the database.")

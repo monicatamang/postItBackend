@@ -3,7 +3,7 @@ from users import get_users, create_user, update_user, delete_user
 from login import create_login, delete_login
 from follows import create_follow, get_follows, delete_follow
 from followers import get_followers
-from tweets import get_tweets, create_tweet, delete_tweet
+from tweets import get_tweets, create_tweet, delete_tweet, update_tweet
 import sys
 
 app = Flask(__name__)
@@ -72,6 +72,11 @@ def call_create_tweets():
 @app.delete("/api/tweets")
 def call_delete_tweet():
     return delete_tweet.delete_tweet()
+
+# Calling the function to update a tweet
+@app.patch("/api/tweets")
+def call_update_tweet():
+    return update_tweet.update_tweet()
 
 # Creating a mode
 if(len(sys.argv) > 1):

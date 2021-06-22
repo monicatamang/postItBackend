@@ -5,21 +5,13 @@ import json
 
 # Creating a function to get a list of all follows
 def get_all_follows():
-    # Trying to get user data
+    # Trying to get the user's id
     try:
         user_id = int(request.args['userId'])
-    except IndexError:
-        traceback.print_exc()
-        print("User does not exist in the database.")
-        return Response("User or login token does not exist.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
-    except UnboundLocalError:
-        traceback.print_exc()
-        print("Data Error. Referencing variables that are not declared.")
-        return Response("Invalid data.", mimetype="text/plain", status=400)
     except TypeError:
         traceback.print_exc()
         print("Data Error. Invalid data type sent to the database.")

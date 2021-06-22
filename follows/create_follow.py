@@ -4,7 +4,7 @@ import dbstatements
 
 # Creating a function to follow other users
 def follow_user():
-    # Receiving data from the user
+    # Trying to get the user's login token and follow id
     try:
         login_token = request.json['loginToken']
         follow_id = int(request.json['followId'])

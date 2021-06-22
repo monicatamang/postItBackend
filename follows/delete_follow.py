@@ -8,18 +8,10 @@ def unfollow_user():
     try:
         login_token = request.json['loginToken']
         follow_id = int(request.json['followId'])
-    except IndexError:
-        traceback.print_exc()
-        print("User or login token does not exist in the database.")
-        return Response("User or login token does not exist.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
-    except UnboundLocalError:
-        traceback.print_exc()
-        print("Data Error. Referencing variables that are not declared.")
-        return Response("Invalid data.", mimetype="text/plain", status=400)
     except TypeError:
         traceback.print_exc()
         print("Data Error. Invalid data type sent to the database.")
