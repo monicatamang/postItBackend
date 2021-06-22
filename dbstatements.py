@@ -72,7 +72,7 @@ def run_insert_statement(sql, data):
         print("Invalid SQL syntax.")
     except mariadb.DatabaseError:
         traceback.print_exc()
-        print("An error in the database has occured. Failed to create user.")
+        print("An error in the database has occured.")
     except:
         traceback.print_exc()
         print("An error has occured.")
@@ -103,16 +103,16 @@ def run_update_statement(sql, data):
         print("Data Error. Invalid data was sent to the database.")
     except mariadb.IntegrityError:
         traceback.print_exc()
-        print("Constraint failure. Failed to delete.")
+        print("Constraint failure. Failed to update.")
     except mariadb.OperationalError:
         traceback.print_exc()
-        print("Error in the database. Failed to delete.")
+        print("Error in the database. Failed to update.")
     except mariadb.ProgrammingError:
         traceback.print_exc()
         print("Invalid SQL syntax.")
     except mariadb.DatabaseError:
         traceback.print_exc()
-        print("An error in the database has occured. Failed to delete.")
+        print("An error in the database has occured.")
     except:
         traceback.print_exc()
         print("An error has occured.")

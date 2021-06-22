@@ -4,7 +4,7 @@ from login import create_login, delete_login
 from follows import create_follow, get_follows, delete_follow
 from followers import get_followers
 from tweets import get_tweets, create_tweet, delete_tweet, update_tweet
-from tweet_likes import get_tweet_likes
+from tweet_likes import get_tweet_likes, create_tweet_like
 import sys
 
 app = Flask(__name__)
@@ -83,6 +83,11 @@ def call_update_tweet():
 @app.get("/api/tweet-likes")
 def call_get_tweet_likes():
     return get_tweet_likes.get_tweet_likes()
+
+# Calling the function to create a tweet like
+@app.post("/api/tweet-likes")
+def call_create_tweet_likes():
+    return create_tweet_like.create_tweet_like()
 
 # Creating a mode
 if(len(sys.argv) > 1):
