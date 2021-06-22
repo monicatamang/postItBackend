@@ -41,7 +41,7 @@ def unfollow_user():
         row_deleted = dbstatements.run_delete_statement("DELETE FROM follow WHERE follower_id = ? AND follow_id = ?", [user_id[0][0], follow_id])
         # If a row in the 'follow' table is deleted, send a client success response
         if(row_deleted == 1):
-            return Response(f"Unfollowed.", mimetype="text/plain", status=204)
+            return Response(status=204)
         # If a row in the 'follow' table is not deleted, send a server error response
         else:
             return Response(f"Failed to unfollow user with an id of {follow_id}.", mimetype="text/plain", status=500)

@@ -18,10 +18,6 @@ def update_user():
         # If the user does not send the token, username, email, password or birthdate, send a client error response
         if(token == None and username == None and email == None and password == None and birthdate == None):
             return Response("Invalid data. Failed to update user.", mimetype="application/json", status=400)
-    except IndexError:
-        traceback.print_exc()
-        print("User does not exist in the database.")
-        return Response("Failed to update user with the given data.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
         print("Key Error. Incorrect Key name of data.")

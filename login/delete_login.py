@@ -36,7 +36,7 @@ def logout_user():
     row_count = dbstatements.run_delete_statement("DELETE FROM user_session WHERE token = ?", [login_token,])
     # If the user's token is deleted, send a client success response
     if(row_count == 1):
-        return Response("Succesfully logged out.", mimetype="text/plain", status=204)
+        return Response(status=204)
     # If the user's token is not deleted, send a server error response
     else:
         return Response("Failed to log out.", mimetype="text/plain", status=500)
