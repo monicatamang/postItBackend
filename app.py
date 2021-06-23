@@ -5,7 +5,7 @@ from follows import create_follow, get_follows, delete_follow
 from followers import get_followers
 from tweets import get_tweets, create_tweet, delete_tweet, update_tweet
 from tweet_likes import get_tweet_likes, create_tweet_like, delete_tweet_like
-from comments import get_comments, create_comment, delete_comment
+from comments import get_comments, create_comment, update_comment, delete_comment
 import sys
 
 app = Flask(__name__)
@@ -104,6 +104,11 @@ def call_get_comments():
 @app.post("/api/comments")
 def call_create_comments():
     return create_comment.post_comment()
+
+# Calling the function to update a comment
+@app.patch("/api/comments")
+def call_update_comments():
+    return update_comment.update_comment()
 
 # Calling the function to delete a comment from a tweet
 @app.delete("/api/comments")
