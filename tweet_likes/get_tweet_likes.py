@@ -42,12 +42,12 @@ def get_tweet_likes():
     else:
         tweet_likes_list = []
         for like in tweet_likes:
-            each_like = {
+            each_tweet_like = {
                 'tweetId': like[0],
                 'userId': like[1],
                 'username': like[2]
             }
-            tweet_likes_list.append(each_like)
+            tweet_likes_list.append(each_tweet_like)
         # Convert data into JSON
         tweet_likes_json = json.dumps(tweet_likes_list, default=str)
         # Send a client success response with the tweet likes
