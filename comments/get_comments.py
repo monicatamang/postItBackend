@@ -17,15 +17,19 @@ def get_comments():
         print("An error has occured.")
         return Response("Invalid tweet id.", mimetype="text/plain", status=400)
 
-    # Trying to get the comments from the databse based on the tweet id
-    comments = dbstatements.run_select_statement("SELECT c.id, c.tweet_id, c.user_id, u.username, c.content, c.created_at FROM users u INNER JOIN comment c ON c.user_id = u.id WHERE c.tweet_id = ?", [tweet_id,])
+    # Checking to see if the tweet id exists in the database
+    db_tweet_id = dbstatements.run_select_statement("SELECT id FROM tweet WHERE id = ?", [tweet_id,])
 
-    # If the comments are not retrieved from the datbase, send a server error response
-    if(comments == None):
-        return Response("Failed to retrieve comments.", mimetype="text/plain", status=500)
-    else:
-        # If the comments are retrieved from the datbase, try sending the comments
-        try:
+    # If the tweet id exists in the database, try to get the comments
+    if(len(db_tweet_id) == 1):
+        # Trying to get the comments from the databse based on the tweet id
+        comments = dbstatements.run_select_statement("SELECT c.id, c.tweet_id, c.user_id, u.username, c.content, c.created_at FROM users u INNER JOIN comment c ON c.user_id = u.id WHERE c.tweet_id = ?", [tweet_id,])
+
+        # If the comments are not retrieved from the database, send a server error response
+        if(comments == None):
+            return Response("Failed to retrieve comments.", mimetype="text/plain", status=500)
+        # If the comments are retrieved from the database, send the comments
+        else:
             for comment in comments:
                 each_comment = [
                     {
@@ -41,11 +45,6 @@ def get_comments():
             each_comment_json = json.dumps(each_comment, default=str)
             # Send a client success response with the comments
             return Response(each_comment_json, mimetype="application/json", status=200)
-        except UnboundLocalError:
-            traceback.print_exc()
-            print("each_comment is referenced before assignment.")
-            return Response(f"Tweet with an id of {tweet_id} does not exist.", mimetype="text/plain", status=500)
-        except:
-            traceback.print_exc()
-            print("An error has occured.")
-            return Response("Invalid user id and/or tweet id.", mimetype="text/plain", status=400)
+    # If the tweet id does not exist in the database, send a client error response
+    else:
+        return Response(f"Failed to retrieve comments.", mimetype="text/plain", status=400)
