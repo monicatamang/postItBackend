@@ -12,6 +12,11 @@ def get_tweets():
         # If the user sends a user id, convert it into an integer
         if(user_id != None):
             user_id = int(user_id)
+            # Checking to see if the user exists
+            db_user_id = dbstatements.run_select_statement("SELECT id FROM users WHERE id = ?", [user_id,])
+            # If the user does not exist in the database, send a client error response
+            if(len(db_user_id) != 1):
+                return Response("User does not exist.", mimetype="text/plain", status=400)
         # If the user sends a tweet id, convert it into an integer
         if(tweet_id != None):
             tweet_id = int(tweet_id)

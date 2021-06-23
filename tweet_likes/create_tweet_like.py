@@ -22,7 +22,7 @@ def like_tweet():
     
     # If the user's id is retrieved from the database, try to create a tweet like
     if(len(user_id) == 1):
-        tweet_like_id = dbstatements.run_update_statement("INSERT INTO tweet_likes(user_id, tweet_id) VALUES(?, ?)", [user_id[0][0], tweet_id])
+        tweet_like_id = dbstatements.run_update_statement("INSERT INTO tweet_like(user_id, tweet_id) VALUES(?, ?)", [user_id[0][0], tweet_id])
         # If a new row is not created in the database, send a server error response
         if(tweet_like_id == None):
             return Response("Failed to like tweet.", mimetype="text/plain", status=500)

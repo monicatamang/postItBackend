@@ -11,6 +11,11 @@ def get_comment_likes():
         # If the user sends a comment id, convert into an integer
         if(comment_id != None):
             comment_id = int(comment_id)
+            # Checking to see if the tweet exists in the database
+            db_comment_id = dbstatements.run_select_statement("SELECT id FROM comment WHERE id = ?", [comment_id,])
+            # If the tweet does not exist in the database, send a client error response
+            if(len(db_comment_id) != 1):
+                return Response("Comment does not exist.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
@@ -30,13 +35,13 @@ def get_comment_likes():
 
     # If the user doesn't send a comment id, get all comment likes
     if(comment_id == None):
-        comment_likes = dbstatements.run_select_statement("SELECT cl.id, cl.user_id, u.username FROM users u INNER JOIN comment_likes cl ON cl.user_id = u.id", [])
+        comment_likes = dbstatements.run_select_statement("SELECT cl.id, cl.user_id, u.username FROM users u INNER JOIN comment_like cl ON cl.user_id = u.id", [])
     # If the user does send a comment id, check if the commend id exist in the database
     else:
         db_comment_id = dbstatements.run_select_statement("SELECT id FROM comment WHERE id = ?", [comment_id,])
         # If the comment id does exist in the database, get the comment likes based on the comment id
         if(len(db_comment_id) == 1):
-            comment_likes = dbstatements.run_select_statement("SELECT cl.id, cl.user_id, u.username FROM users u INNER JOIN comment_likes cl ON cl.user_id = u.id WHERE cl.comment_id = ?", [comment_id,])
+            comment_likes = dbstatements.run_select_statement("SELECT cl.id, cl.user_id, u.username FROM users u INNER JOIN comment_like cl ON cl.user_id = u.id WHERE cl.comment_id = ?", [comment_id,])
         # If the comment id doesn't exist in the database, send a client error response
         else:
             return Response(f"Failed to get comment likes from comment with an id of {comment_id}.", mimetype="text/plain", status=400)

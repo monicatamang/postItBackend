@@ -11,6 +11,11 @@ def get_tweet_likes():
         # If the user sends a valid tweet id, convert it into a integer
         if(tweet_id != None):
             tweet_id = int(tweet_id)
+            # Checking to see if the tweet exists in the database
+            db_tweet_id = dbstatements.run_select_statement("SELECT id FROM tweet WHERE id = ?", [tweet_id,])
+            # If the tweet does not exist in the database, send a client error response
+            if(len(db_tweet_id) != 1):
+                return Response("Tweet does not exist.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
@@ -30,10 +35,10 @@ def get_tweet_likes():
 
     # If the tweet id is not given, send all tweet likes on all tweets
     if(tweet_id == None):
-        tweet_likes = dbstatements.run_select_statement("SELECT tl.tweet_id, u.id, u.username FROM users u INNER JOIN tweet_likes tl ON tl.user_id = u.id", [])
+        tweet_likes = dbstatements.run_select_statement("SELECT tl.tweet_id, u.id, u.username FROM users u INNER JOIN tweet_like tl ON tl.user_id = u.id", [])
     # If the tweet id is given, send all tweet likes with the tweet id
     else:
-        tweet_likes = dbstatements.run_select_statement("SELECT tl.tweet_id, u.id, u.username FROM users u INNER JOIN tweet_likes tl ON tl.user_id = u.id WHERE tl.tweet_id = ?", [tweet_id,])
+        tweet_likes = dbstatements.run_select_statement("SELECT tl.tweet_id, u.id, u.username FROM users u INNER JOIN tweet_like tl ON tl.user_id = u.id WHERE tl.tweet_id = ?", [tweet_id,])
 
     # If the tweet likes are not retrieved from the database, send a server error response
     if(tweet_likes == None):

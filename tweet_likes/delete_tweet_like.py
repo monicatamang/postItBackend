@@ -18,7 +18,7 @@ def unlike_tweet():
         return Response("Invalid login token and/or tweet id.", mimetype="text/plain", status=400)
 
     # Trying to delete a tweet like with the login token and tweet id
-    row_count = dbstatements.run_delete_statement("DELETE tl FROM user_session us INNER JOIN tweet_likes tl ON tl.user_id = us.user_id WHERE us.token = ? AND tl.tweet_id = ?", [login_token, tweet_id])
+    row_count = dbstatements.run_delete_statement("DELETE tl FROM user_session us INNER JOIN tweet_like tl ON tl.user_id = us.user_id WHERE us.token = ? AND tl.tweet_id = ?", [login_token, tweet_id])
 
     # If the tweet like is deleted, send a client success response
     if(row_count == 1):

@@ -23,14 +23,14 @@ def like_comment():
 
     # If the user is logged in, create a comment like based on the user id and comment id
     if(len(user_id) == 1):
-        comment_like_id = dbstatements.run_insert_statement("INSERT INTO comment_likes(user_id, comment_id) VALUES(?, ?)", [user_id[0][0], comment_id])
+        comment_like_id = dbstatements.run_insert_statement("INSERT INTO comment_like(user_id, comment_id) VALUES(?, ?)", [user_id[0][0], comment_id])
 
         # If a new row is not created in the database, send a server error response
         if(comment_like_id == None):
             return Response(f"Failed to like commment with an id of {comment_id}.", mimetype="text/plain", status=500)
         # If a new row is created in the database, get the users who liked the comment
         else:
-            comment_like_info = dbstatements.run_select_statement("SELECT cl.comment_id, cl.user_id, u.username FROM users u INNER JOIN comment_likes cl ON cl.user_id = u.id WHERE cl.id = ?", [comment_like_id,])
+            comment_like_info = dbstatements.run_select_statement("SELECT cl.comment_id, cl.user_id, u.username FROM users u INNER JOIN comment_like cl ON cl.user_id = u.id WHERE cl.id = ?", [comment_like_id,])
             
             # If the users who liked the comment are retrieved from the database, send the data
             if(len(comment_like_info) == 1):

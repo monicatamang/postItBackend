@@ -10,6 +10,11 @@ def get_users():
         # If the user id is valid, convert it into an integer
         if(user_id != None):
             user_id = int(user_id)
+            # Checking to see if the user exists
+            db_user_id = dbstatements.run_select_statement("SELECT id FROM users WHERE id = ?", [user_id,])
+            # If the user does not exist in the database, send a client error response
+            if(len(db_user_id) != 1):
+                return Response("User does not exist.", mimetype="text/plain", status=400)
     except TypeError:
         traceback.print_exc()
         print("Data Error. Invalid data type sent to the database.")

@@ -18,7 +18,7 @@ def unlike_comment():
         return Response("Invalid comment id.", mimetype="text/plain", status=400)
 
     # Trying to unlike a comment with the given comment id
-    row_count = dbstatements.run_delete_statement("DELETE cl FROM user_session us INNER JOIN comment_likes cl ON cl.user_id = us.user_id WHERE us.token = ? AND cl.comment_id = ?", [login_token, comment_id])
+    row_count = dbstatements.run_delete_statement("DELETE cl FROM user_session us INNER JOIN comment_like cl ON cl.user_id = us.user_id WHERE us.token = ? AND cl.comment_id = ?", [login_token, comment_id])
 
     # If the comment like is deleted from the database, send a client success response
     if(row_count == 1):
