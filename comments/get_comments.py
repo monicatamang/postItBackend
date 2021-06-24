@@ -23,7 +23,7 @@ def get_comments():
     # If the tweet id exists in the database, try to get the comments
     if(len(db_tweet_id) == 1):
         # Trying to get the comments from the databse based on the tweet id
-        comments = dbstatements.run_select_statement("SELECT c.id, c.tweet_id, c.user_id, u.username, c.content, c.created_at FROM users u INNER JOIN comment c ON c.user_id = u.id WHERE c.tweet_id = ?", [tweet_id,])
+        comments = dbstatements.run_select_statement("SELECT c.id, c.tweet_id, c.user_id, u.username, c.content, c.created_at FROM users u INNER JOIN comment c ON c.user_id = u.id WHERE c.tweet_id = ? ORDER BY c.created_at DESC", [tweet_id,])
 
         # If the comments are not retrieved from the database, send a server error response
         if(comments == None):

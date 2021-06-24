@@ -7,6 +7,7 @@ from tweets import get_tweets, create_tweet, delete_tweet, update_tweet
 from tweet_likes import get_tweet_likes, create_tweet_like, delete_tweet_like
 from comments import get_comments, create_comment, update_comment, delete_comment
 from comment_likes import get_comment_likes, create_comment_like, delete_comment_like
+from search import search_by_username
 import sys
 
 app = Flask(__name__)
@@ -130,6 +131,11 @@ def call_create_comment_likes():
 @app.delete("/api/comment-likes")
 def call_delete_comment_likes():
     return delete_comment_like.unlike_comment()
+
+# Calling the function to search for a specific user
+@app.get("/api/search")
+def call_search_users():
+    return search_by_username.search_by_username()
 
 # Creating a mode
 if(len(sys.argv) > 1):
