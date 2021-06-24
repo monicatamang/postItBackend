@@ -28,21 +28,21 @@ def get_comments():
         # If the comments are retrieved from the database, send the comments
         if(len(comments) >= 1):
             # If the comments are retrieved from the database, send the comments
+            user_comments = []
             for comment in comments:
-                each_comment = [
-                    {
-                        'commentId': comment[0],
-                        'tweetId': comment[1],
-                        'userId': comment[2],
-                        'username': comment[3],
-                        'content': comment[4],
-                        'createdAt': comment[5]
-                    }
-                ]
+                each_comment = {
+                    'commentId': comment[0],
+                    'tweetId': comment[1],
+                    'userId': comment[2],
+                    'username': comment[3],
+                    'content': comment[4],
+                    'createdAt': comment[5]
+                }
+                user_comments.append(each_comment)
             # Convert data into JSON
-            each_comment_json = json.dumps(each_comment, default=str)
+            user_comments_json = json.dumps(user_comments, default=str)
             # Send a client success response with the comments
-            return Response(each_comment_json, mimetype="application/json", status=200)
+            return Response(user_comments_json, mimetype="application/json", status=200)
         # If a tweet does not have a comment, send back an empty array to the user with a client success response
         elif(len(comments) == 0):
             return Response([], mimetype="application/json", status=200)

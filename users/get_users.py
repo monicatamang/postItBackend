@@ -52,6 +52,6 @@ def get_users():
             }
             users_list.append(each_user)
         # Convert data to JSON
-        users_list_json = json.dumps(users, default=str)
+        users_list_json = json.dumps(users_list, default=str)
         # Send a client success response
         return Response(users_list_json, mimetype="application/json", status=200)
