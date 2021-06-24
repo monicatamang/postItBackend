@@ -25,11 +25,9 @@ def get_comments():
         # Trying to get the comments from the databse based on the tweet id
         comments = dbstatements.run_select_statement("SELECT c.id, c.tweet_id, c.user_id, u.username, c.content, c.created_at FROM users u INNER JOIN comment c ON c.user_id = u.id WHERE c.tweet_id = ? ORDER BY c.created_at DESC", [tweet_id,])
 
-        # If the comments are not retrieved from the database, send a server error response
-        if(comments == None):
-            return Response("Failed to retrieve comments.", mimetype="text/plain", status=500)
         # If the comments are retrieved from the database, send the comments
-        else:
+        if(len(comments) >= 1):
+            # If the comments are retrieved from the database, send the comments
             for comment in comments:
                 each_comment = [
                     {
@@ -45,6 +43,13 @@ def get_comments():
             each_comment_json = json.dumps(each_comment, default=str)
             # Send a client success response with the comments
             return Response(each_comment_json, mimetype="application/json", status=200)
+        # If a tweet does not have a comment, send back an empty array to the user with a client success response
+        elif(len(comments) == 0):
+            return Response([], mimetype="application/json", status=200)
+        # If the comments are not retrieved from the database, send a server error response
+        else:
+            return Response("Failed to retrieve comments.", mimetype="text/plain", status=500)
+
     # If the tweet id does not exist in the database, send a client error response
     else:
         return Response(f"Failed to retrieve comments.", mimetype="text/plain", status=400)

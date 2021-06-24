@@ -32,7 +32,7 @@ def login_user():
         # If a login token is made, send the user their data with the login token as a dictionary
         if(token != None):
             user_data = {
-                'user_id': db_records[0][0],
+                'userId': db_records[0][0],
                 'email': db_records[0][1],
                 'username': db_records[0][2],
                 'bio': db_records[0][3],

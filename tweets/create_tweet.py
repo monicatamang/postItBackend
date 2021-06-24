@@ -36,7 +36,7 @@ def post_tweet():
                     'tweetId': get_new_tweet[0][0],
                     'userId': get_new_tweet[0][1],
                     'username': get_new_tweet[0][2],
-                    'userImageUrl': get_new_tweet[0][3],
+                    'imageUrl': get_new_tweet[0][3],
                     'content': get_new_tweet[0][4],
                     'createdAt': get_new_tweet[0][5]
                 }

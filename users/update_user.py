@@ -35,14 +35,21 @@ def update_user():
         print("An error has occured.")
         return Response("Failed to update user.", mimetype="text/plain", status=400)
 
-    # Checking to see if the token is stored in the database
-    db_records = dbstatements.run_select_statement("SELECT user_id FROM user_session WHERE token = ?", [token,])
+    # Getting the user's token, bio, birthdate and image from the database
+    db_records = dbstatements.run_select_statement("SELECT us.user_id, u.bio, u.birthdate, u.image_url FROM users u INNER JOIN user_session us ON us.user_id = u.id WHERE token = ?", [token,])
     # If the token does not match, send a server error response
     if(db_records == None):
         return Response("Failed to update user.", mimetype="text/plain", status=500)
-    # If the token matches with the database records, get the user id
+    # If the token matches with the database records, get the user's data
     else:
         user_id = db_records[0][0]
+        # If the user's bio, birthdate or image url are not updated, set it as the user's initial bio, birthdate or image url
+        if(bio == None or bio == ""):
+            bio = db_records[0][1]
+        if(birthdate == None or birthdate == ""):
+            birthdate = db_records[0][2]
+        if(image_url == None or image_url == ""):
+            image_url = db_records[0][3]
 
     # Updating the user based on the data sent
     data = []
