@@ -17,17 +17,18 @@ def search_by_username():
         print("An error has occured.")
         return Response("Invalid login token and/or tweet id.", mimetype="text/plain", status=400)
 
-    # If the user didn't send any data, try to get the user's data
+    # If the user doesn't send any data, i.e., if the user doesn't type anything into the search bar, send all users
     if(search_input == None):
         results = dbstatements.run_select_statement("SELECT id, username, bio, image_url FROM users", [])
-    # If the user does send a username, try to find the matching username and get the user's data
+    # If the user does send data, i.e., they type in a username into the search bar, try to find all records that matches or closely matches that username
     else:
-        results = dbstatements.run_select_statement("SELECT id, username, bio, image_url FROM users WHERE username LIKE CONCAT('%', ?, '%')", [search_input, search_input])
+        results = dbstatements.run_select_statement("SELECT id, username, bio, image_url FROM users WHERE username LIKE CONCAT('%', ?, '%')", [search_input,])
 
-    # If data is not retrieved from the database, send a server error response
+    # If something goes wrong in the database, ex. database connection failure, send a server error response
     if(results == None):
         return Response(f"Failed to find '{search_input}'.", mimetype="text/plain", status=500)
-    # If data is retrieved from the database, send the search results to the user
+    # If a match is found, send all matches as a list of dictionaries
+    # If no matches are found, an empty list will be returned
     else:
         search_results = []
         for result in results:

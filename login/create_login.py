@@ -3,6 +3,8 @@ import traceback
 import dbstatements
 import json
 import user_token
+import hashlib
+import dbsalt
 
 # Creating a function to logs in a user
 def login_user():
@@ -22,6 +24,10 @@ def login_user():
     # If the user did not send an eamil or password, send a server error response
     if(email == "" or password == ""):
         return Response("User Data Error.", mimetype="text/plain", status=400)
+
+    salt = dbsalt.get_salt(email)
+    password = salt + password
+    password = hashlib.sha512(password.encode()).hexdigest()
 
     # Check if the user's email and password matches with the database records
     db_records = dbstatements.run_select_statement("SELECT id, email, username, bio, birthdate, image_url FROM users WHERE email = ? AND password = ?", [email, password])

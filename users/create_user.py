@@ -3,6 +3,8 @@ import traceback
 import dbstatements
 import json
 import user_token
+import hashlib
+import dbsalt
 
 # Creating a function to create a new user
 def create_user():
@@ -27,8 +29,13 @@ def create_user():
     if(username == None or email == None or password == None or birthdate == None):
         return Response("Invalid Data.", mimetype="text/plain", status=400)
 
+    # Hashing and salting the user's password
+    salt = dbsalt.create_salt()
+    password = salt + password
+    password = hashlib.sha512(password.encode()).hexdigest()
+
     # Inserting the user's data into the database and getting the new user's id
-    user_id = dbstatements.run_insert_statement("INSERT INTO users(username, email, password, bio, birthdate, image_url) VALUES(?, ?, ?, ?, ?, ?)", [username, email, password, bio, birthdate, image_url])
+    user_id = dbstatements.run_insert_statement("INSERT INTO users(username, email, password, bio, birthdate, image_url, salt) VALUES(?, ?, ?, ?, ?, ?, ?)", [username, email, password, bio, birthdate, image_url, salt])
 
     # If user's id is not created, send a server error response
     if(user_id == None):
@@ -43,7 +50,6 @@ def create_user():
                 'loginToken': token,
                 'email': email,
                 'username': username,
-                'password': password,
                 'bio': bio,
                 'birthdate': birthdate,
                 'imageUrl': image_url,

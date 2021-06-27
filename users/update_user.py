@@ -1,7 +1,9 @@
 from flask import Flask, request, Response
 import traceback
+import dbsalt
 import dbstatements
 import json
+import hashlib
 
 # Creating a function to update a user
 def update_user():
@@ -37,11 +39,9 @@ def update_user():
 
     # Getting the user's token, bio, birthdate and image from the database
     db_records = dbstatements.run_select_statement("SELECT us.user_id, u.bio, u.birthdate, u.image_url FROM users u INNER JOIN user_session us ON us.user_id = u.id WHERE token = ?", [token,])
-    # If the token does not match, send a server error response
-    if(db_records == None):
-        return Response("Failed to update user.", mimetype="text/plain", status=500)
+
     # If the token matches with the database records, get the user's data
-    else:
+    if(len(db_records) == 1):
         user_id = db_records[0][0]
         # If the user's bio, birthdate or image url are not updated, set it as the user's initial bio, birthdate or image url
         if(bio == None or bio == ""):
@@ -50,7 +50,10 @@ def update_user():
             birthdate = db_records[0][2]
         if(image_url == None or image_url == ""):
             image_url = db_records[0][3]
-
+    # If the token does not match, send a server error response
+    else:
+        return Response("Failed to update user.", mimetype="text/plain", status=500)
+    
     # Updating the user based on the data sent
     data = []
     sql = "UPDATE users SET"
@@ -61,8 +64,18 @@ def update_user():
         sql += " username = ?,"
         data.append(username)
     if(password != None):
-        sql += " password = ?,"
-        data.append(password)
+        # If the user wants to change their password, replace the user's existing salt with a new generated salt
+        salt = dbsalt.create_salt()
+        row_count = dbstatements.run_update_statement("UPDATE users u INNER JOIN user_session us ON us.user_id = u.id SET u.salt = ? WHERE us.token = ?", [salt, token])
+        # If the user's salt is updated, hash and salt the new password
+        if(row_count == 1):
+            password = salt + password
+            password = hashlib.sha512(password.encode()).hexdigest()
+            sql += " password = ?,"
+            data.append(password)
+        # If the user's salt is not updated, send a server error response
+        else:
+            return Response("Failed to update user.", mimetype="text/plain", status=500)
     if(bio != None):
         sql += " bio = ?,"
         data.append(bio)
