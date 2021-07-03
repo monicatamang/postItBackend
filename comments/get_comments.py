@@ -45,7 +45,7 @@ def get_comments():
             return Response(user_comments_json, mimetype="application/json", status=200)
         # If a tweet does not have a comment, send back an empty array to the user with a client success response
         elif(len(comments) == 0):
-            return Response([], mimetype="application/json", status=200)
+            return Response(json.dumps([], default=str), mimetype="application/json", status=200)
         # If the comments are not retrieved from the database, send a server error response
         else:
             return Response("Failed to retrieve comments.", mimetype="text/plain", status=500)

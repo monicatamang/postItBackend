@@ -18,6 +18,6 @@ def get_salt(email):
     # If the user's salt is retrieved from the database, return the salt
     if(len(user) == 1):
         return user[0][0]
-    # if the user's salt is not retrieved from the database, send a server error response
+    # if the user's salt is not retrieved from the database, return None
     else:
-        return Response("Failed to log in.", mimetype="text/plain", status=500)
+        return None

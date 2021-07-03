@@ -24,8 +24,13 @@ def delete_user():
     # If the email is retrieved from the database, get the user's salt from the database and hash the password
     if(len(email) == 1):
         salt = dbsalt.get_salt(email[0][0])
-        password = salt + password
-        password = hashlib.sha512(password.encode()).hexdigest()
+        # If the user's salt is not retrieved from the database, send a server error response
+        if(salt == None):
+            return Response("Failed to delete user.", mimetype="text/plain", status=500)
+        # If the user's salt is retrieved from the database, hash and salt the user's password
+        else:
+            password = salt + password
+            password = hashlib.sha512(password.encode()).hexdigest()
     # If the email is not retrieved from the database, send a server error response
     else:
         return Response("User not logged in.", mimetype="text/plain", status=500)

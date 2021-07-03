@@ -25,9 +25,15 @@ def login_user():
     if(email == "" or password == ""):
         return Response("User Data Error.", mimetype="text/plain", status=400)
 
+    # Getting the user's salt from the database
     salt = dbsalt.get_salt(email)
-    password = salt + password
-    password = hashlib.sha512(password.encode()).hexdigest()
+    # If the user's salt is not retrieved from the database, send a server error response
+    if(salt == None):
+        return Response("Failed to log in.", mimetype="text/plain", status=500)
+    # If the user's salt is retrieved from the database, hash and salt the user's password
+    else:
+        password = salt + password
+        password = hashlib.sha512(password.encode()).hexdigest()
 
     # Check if the user's email and password matches with the database records
     db_records = dbstatements.run_select_statement("SELECT id, email, username, bio, birthdate, image_url FROM users WHERE email = ? AND password = ?", [email, password])

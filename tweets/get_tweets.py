@@ -43,7 +43,7 @@ def get_tweets():
     elif(user_id != None):
         tweets = dbstatements.run_select_statement("SELECT t.id, u.id, u.username, t.content, t.created_at, u.image_url FROM users u INNER JOIN tweet t ON t.user_id = u.id WHERE u.id = ? ORDER BY t.created_at DESC", [user_id,])
     elif(tweet_id != None):
-        tweets = dbstatements.run_select_statement("SELECT t.id, u.id, u.username, t.content, t.created_at, u.image_url FROM users u INNER JOIN tweet t ON t.user_id = u.id WHERE t.id = ? AND u.id =? ORDER BY t.created_at DESC", [tweet_id, user_id])
+        tweets = dbstatements.run_select_statement("SELECT t.id, u.id, u.username, t.content, t.created_at, u.image_url FROM users u INNER JOIN tweet t ON t.user_id = u.id WHERE t.id = ? ORDER BY t.created_at DESC", [tweet_id,])
 
     # If the tweets are not retrieved from the database, send a server error response
     if(tweets == None):
