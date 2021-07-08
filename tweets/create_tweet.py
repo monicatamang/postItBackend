@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import request, Response
 import traceback
 import dbstatements
 import json
@@ -9,6 +9,10 @@ def post_tweet():
     try:
         login_token = request.json['loginToken']
         content = request.json['content']
+
+        # If the user creates a tweet without content, send a client error response
+        if(content == ''):
+            return Response("Invalid tweet.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
@@ -19,7 +23,7 @@ def post_tweet():
         return Response("Invalid login token and/or tweet content.", mimetype="text/plain", status=400)
     
     # Validating the user's login token
-    check_user_login = dbstatements.run_select_statement("SELECT user_id, token FROM user_session WHERE token = ?", [login_token,])
+    check_user_login = dbstatements.run_select_statement("SELECT user_id FROM user_session WHERE token = ?", [login_token,])
 
     # If the user's login token is valid, create a new tweet
     if(len(check_user_login) == 1):

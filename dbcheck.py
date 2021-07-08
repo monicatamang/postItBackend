@@ -2,6 +2,7 @@ import dbconnect
 
 # Creating a function that closes the database connection and the cursor
 def close_db_connection_and_cursor(conn, cursor):
+    # Closing the cursor and database connection
     closing_cursor = dbconnect.close_cursor(cursor)
     closing_db = dbconnect.close_db_connection(conn)
     # If the cursor or database connection failed to close, print an error message

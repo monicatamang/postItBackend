@@ -1,4 +1,3 @@
-from flask import Flask, request, Response
 import dbstatements
 import string
 import random
@@ -18,6 +17,6 @@ def get_salt(email):
     # If the user's salt is retrieved from the database, return the salt
     if(len(user) == 1):
         return user[0][0]
-    # if the user's salt is not retrieved from the database, return None
+    # If the user's salt is not retrieved from the database, return None
     else:
         return None

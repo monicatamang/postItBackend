@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import request, Response
 import traceback
 import dbsalt
 import dbstatements
@@ -7,7 +7,7 @@ import hashlib
 
 # Creating a function to update a user
 def update_user():
-    # Receiving user data
+    # Receiving the user's data
     try:
         token = request.json['loginToken']
         username = request.json.get('username')
@@ -37,13 +37,13 @@ def update_user():
         print("An error has occured.")
         return Response("Failed to update user.", mimetype="text/plain", status=400)
 
-    # Getting the user's token, bio, birthdate and image from the database
+    # Getting the user's original token, bio, birthdate and image from the database
     db_records = dbstatements.run_select_statement("SELECT us.user_id, u.bio, u.birthdate, u.image_url FROM users u INNER JOIN user_session us ON us.user_id = u.id WHERE token = ?", [token,])
 
     # If the token matches with the database records, get the user's data
     if(len(db_records) == 1):
         user_id = db_records[0][0]
-        # If the user's bio, birthdate or image url are not updated, set it as the user's initial bio, birthdate or image url
+        # If the user's bio, birthdate or image url are not updated, set it as the user's original bio, birthdate or image url
         if(bio == None or bio == ""):
             bio = db_records[0][1]
         if(birthdate == None or birthdate == ""):
@@ -55,8 +55,11 @@ def update_user():
         return Response("Failed to update user.", mimetype="text/plain", status=500)
     
     # Updating the user based on the data sent
+    # Initializing an empty list and UPDATE query
     data = []
     sql = "UPDATE users SET"
+    # The following if statements have the same comments applied to them:
+    # If the user changes their one of their information, add their information to the UPDATE query as a column and append the column value to the list
     if(email != None):
         sql += " email = ?,"
         data.append(email)
@@ -64,7 +67,7 @@ def update_user():
         sql += " username = ?,"
         data.append(username)
     if(password != None):
-        # If the user wants to change their password, replace the user's existing salt with a new generated salt
+        # If the user wants to change their password, replace the user's existing salt with a new generated salt in the database
         salt = dbsalt.create_salt()
         row_count = dbstatements.run_update_statement("UPDATE users u INNER JOIN user_session us ON us.user_id = u.id SET u.salt = ? WHERE us.token = ?", [salt, token])
         # If the user's salt is updated, hash and salt the new password
@@ -86,7 +89,7 @@ def update_user():
         sql += " image_url = ?,"
         data.append(image_url)
 
-    # Removing the comma at the end of the list
+    # Removing the comma at the end of the query
     sql = sql[:-1]
     # Adding the where clause
     sql += " WHERE id = ?"

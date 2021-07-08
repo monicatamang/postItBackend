@@ -22,7 +22,7 @@ def search_by_username():
         results = dbstatements.run_select_statement("SELECT id, username, bio, image_url FROM users", [])
     # If the user does send data, i.e., they type in a username into the search bar, try to find all records that matches or closely matches that username
     else:
-        results = dbstatements.run_select_statement("SELECT id, username, bio, image_url FROM users WHERE username LIKE CONCAT('%', ?, '%')", [search_input,])
+        results = dbstatements.run_select_statement("SELECT id, username, bio, image_url FROM users WHERE username LIKE CONCAT('%', ?, '%') ORDER BY created_at DESC", [search_input,])
 
     # If something goes wrong in the database, ex. database connection failure, send a server error response
     if(results == None):

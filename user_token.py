@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Response
 import mariadb
 import traceback
 import dbconnect
@@ -44,6 +44,7 @@ def get_user_token(user_id):
 
     # Closing the cursor and database connection
     dbcheck.close_db_connection_and_cursor(conn, cursor)
+
     # If a new row is created in the 'user_session' table, return the token
     if(result == 1):
         return token

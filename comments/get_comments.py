@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import request, Response
 import traceback
 import dbstatements
 import json
@@ -12,6 +12,14 @@ def get_comments():
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
+    except TypeError:
+        traceback.print_exc()
+        print("Data Error. Invalid data type sent to the database.")
+        return Response("Invalid data.", mimetype="text/plain", status=400)
+    except ValueError:
+        traceback.print_exc()
+        print("Invalid data was sent to the database.")
+        return Response("Invalid data.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
         print("An error has occured.")
@@ -25,9 +33,11 @@ def get_comments():
         # Trying to get the comments from the databse based on the tweet id
         comments = dbstatements.run_select_statement("SELECT c.id, c.tweet_id, c.user_id, u.username, c.content, c.created_at FROM users u INNER JOIN comment c ON c.user_id = u.id WHERE c.tweet_id = ? ORDER BY c.created_at DESC", [tweet_id,])
 
-        # If the comments are retrieved from the database, send the comments
-        if(len(comments) >= 1):
-            # If the comments are retrieved from the database, send the comments
+        # If the comments are not retrieved from the database, send a server error response
+        if(comments == None):
+            return Response("Failed to retrieve comments.", mimetype="text/plain", status=500)
+        # If the comments are retrieved from the database, return comments as a list of dictionaries
+        else:
             user_comments = []
             for comment in comments:
                 each_comment = {
@@ -43,13 +53,6 @@ def get_comments():
             user_comments_json = json.dumps(user_comments, default=str)
             # Send a client success response with the comments
             return Response(user_comments_json, mimetype="application/json", status=200)
-        # If a tweet does not have a comment, send back an empty array to the user with a client success response
-        elif(len(comments) == 0):
-            return Response(json.dumps([], default=str), mimetype="application/json", status=200)
-        # If the comments are not retrieved from the database, send a server error response
-        else:
-            return Response("Failed to retrieve comments.", mimetype="text/plain", status=500)
-
     # If the tweet id does not exist in the database, send a client error response
     else:
         return Response(f"Failed to retrieve comments.", mimetype="text/plain", status=400)

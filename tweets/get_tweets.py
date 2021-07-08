@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import request, Response
 import traceback
 import dbstatements
 import json
@@ -40,15 +40,17 @@ def get_tweets():
     # If the user does not send a user id or tweet id, get all tweets from the database
     if(user_id == None and tweet_id == None):
         tweets = dbstatements.run_select_statement("SELECT t.id, u.id, u.username, t.content, t.created_at, u.image_url FROM users u INNER JOIN tweet t ON t.user_id = u.id ORDER BY t.created_at DESC", [])
+    # If the user sends only the user id, get tweets that are owned by the user id
     elif(user_id != None):
         tweets = dbstatements.run_select_statement("SELECT t.id, u.id, u.username, t.content, t.created_at, u.image_url FROM users u INNER JOIN tweet t ON t.user_id = u.id WHERE u.id = ? ORDER BY t.created_at DESC", [user_id,])
+    # If the user sends only the tweet id, get tweet with that tweet id
     elif(tweet_id != None):
-        tweets = dbstatements.run_select_statement("SELECT t.id, u.id, u.username, t.content, t.created_at, u.image_url FROM users u INNER JOIN tweet t ON t.user_id = u.id WHERE t.id = ? ORDER BY t.created_at DESC", [tweet_id,])
+        tweets = dbstatements.run_select_statement("SELECT t.id, u.id, u.username, t.content, t.created_at, u.image_url FROM users u INNER JOIN tweet t ON t.user_id = u.id WHERE t.id = ?", [tweet_id,])
 
-    # If the tweets are not retrieved from the database, send a server error response
+    # If tweets are not retrieved from the database, send a server error response
     if(tweets == None):
         return Response("Failed to retrieve tweets.", mimetype="text/plain", status=500)
-    # If the tweets are retrieved from the database, send tweets as a list of dictionaries
+    # If tweets are retrieved from the database, return tweets as a list of dictionaries
     else:
         tweets_list = []
         for tweet in tweets:

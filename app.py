@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Flask
 from users import get_users, create_user, update_user, delete_user
 from login import create_login, delete_login
 from follows import create_follow, get_follows, delete_follow

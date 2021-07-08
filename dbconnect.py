@@ -4,62 +4,66 @@ import traceback
 
 # Creating a function that opens that database connection
 def open_db_connection():
+    # Try to return the connection to the database
     try:
         return mariadb.connect(user=dbcreds.user, password=dbcreds.password, host=dbcreds.host, port=dbcreds.port, database=dbcreds.database)
     except mariadb.OperationalError:
+        traceback.print_exc()
         print("Operational errors detected in the database connection.")
-        traceback.print_exc()
     except mariadb.DatabaseError:
+        traceback.print_exc()
         print("Error detected in the database and resulted in a connection failure.")
-        traceback.print_exc()
     except:
-        print("An error has occured. Failed to connect to the database.")
         traceback.print_exc()
+        print("An error has occured. Failed to connect to the database.")
 
 # Creating a function that returns a cursor object using the current connection
 def create_db_cursor(conn):
+    # Trying to return the database cursor
     try:
         return conn.cursor()
     except mariadb.InternalError:
+        traceback.print_exc()
         print("Internal errors detected in the database. Failed to create a cursor.")
-        traceback.print_exc()
     except mariadb.OperationalError:
+        traceback.print_exc()
         print("Operational errors detected in the database connection. Failed to create a cursor.")
-        traceback.print_exc()
     except mariadb.DatabaseError:
+        traceback.print_exc()
         print("Errors detected in database. Failed to create a cursor.")
-        traceback.print_exc()
     except:
-        print("An error has occured. Failed to create a cursor.")
         traceback.print_exc()
+        print("An error has occured. Failed to create a cursor.")
 
 # Creating a function that closes the cursor
 def close_cursor(cursor):
     # Checking to see if the cursor was initially created and if it wasn't, don't attempt to close the cursor
     if(cursor == None):
         return True
+    # Trying to close the database cursor
     try:
         cursor.close()
         return True
     except mariadb.InternalError:
+        traceback.print_exc()
         print("Internal errors detected in the database. Failed to create a cursor.")
-        traceback.print_exc()
     except mariadb.OperationalError:
+        traceback.print_exc()
         print("Operational errors detected in the database connection. Failed to create a cursor.")
-        traceback.print_exc()
     except mariadb.DatabaseError:
+        traceback.print_exc()
         print("Errors detected with the current connection. Failed to close cursor.")
-        traceback.print_exc()
     except:
-        print("An error has occured. Failed to close cursor.")
         traceback.print_exc()
+        print("An error has occured. Failed to close cursor.")
         return False
 
 # Creating a function that closes the database connection
 def close_db_connection(conn):
-    # If the database connect was not initially opened, don't attempt to close it
+    # Checking to see if the database connection was initially opened and if it was't, don't attempt to close the connection
     if(conn == None):
         return True
+    # Trying to close the database connection
     try:
         conn.close()
         return True

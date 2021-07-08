@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import request, Response
 import traceback
 import dbstatements
 import json
@@ -13,6 +13,14 @@ def like_comment():
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
+    except TypeError:
+        traceback.print_exc()
+        print("Data Error. Invalid data type sent to the database.")
+        return Response("Invalid data.", mimetype="text/plain", status=400)
+    except ValueError:
+        traceback.print_exc()
+        print("Invalid data was sent to the database.")
+        return Response("Invalid data.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
         print("An error has occured.")
@@ -32,7 +40,7 @@ def like_comment():
         else:
             comment_like_info = dbstatements.run_select_statement("SELECT cl.comment_id, cl.user_id, u.username FROM users u INNER JOIN comment_like cl ON cl.user_id = u.id WHERE cl.id = ?", [comment_like_id,])
             
-            # If the users who liked the comment are retrieved from the database, send the data
+            # If the users who liked the comment are retrieved from the database, send the data as a dictionary
             if(len(comment_like_info) == 1):
                 comment_like_users = {
                     'commentId': comment_like_info[0][0],

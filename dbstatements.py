@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Response
 import mariadb
 import dbconnect
 import traceback
@@ -53,7 +53,7 @@ def run_insert_statement(sql, data):
     if(check_database == False):
         return Response("Database connection failed.", mimetype="text/plain", status=500)
 
-    # Try to run the SELECT statement with the sql and params passed in
+    # Try to run the INSERT statement with the sql and data passed in
     try:
         cursor.execute(sql, data)
         conn.commit()
@@ -94,6 +94,7 @@ def run_update_statement(sql, data):
     if(check_database == False):
         return Response("Database connection failed.", mimetype="text/plain", status=500)
 
+    # Try to run the UPDATE statement with the sql and data passed in
     try:
         cursor.execute(sql, data)
         conn.commit()
@@ -119,6 +120,7 @@ def run_update_statement(sql, data):
 
     # Closing the cursor and database connection
     dbcheck.close_db_connection_and_cursor(conn, cursor)
+
     # Return the result
     return result
 
@@ -134,6 +136,7 @@ def run_delete_statement(sql, data):
     if(check_database == False):
         return Response("Database connection failed.", mimetype="text/plain", status=500)
 
+    # Try to run the DELETE statment with the sql and data passed in
     try:
         cursor.execute(sql, data)
         conn.commit()

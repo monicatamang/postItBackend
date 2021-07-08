@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import request, Response
 import traceback
 import dbstatements
 import dbsalt
@@ -6,7 +6,7 @@ import hashlib
 
 # Creating a function to delete an existing user
 def delete_user():
-    # Receiving the token and password from the user
+    # Trying to get the user's token and password
     try:
         token = request.json['loginToken']
         password = request.json['password']

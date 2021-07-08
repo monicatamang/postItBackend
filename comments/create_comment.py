@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import request, Response
 import traceback
 import dbstatements
 import json
@@ -10,6 +10,10 @@ def post_comment():
         login_token = request.json['loginToken']
         tweet_id = int(request.json['tweetId'])
         content = request.json['content']
+
+        # If the user creates a comment without content, send a client error response
+        if(content == ''):
+            return Response("Invalid data.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
@@ -25,16 +29,16 @@ def post_comment():
     # If the user id is retrieved from the database, insert the comment into the database
     if(len(user_id) == 1):
         comment_id = dbstatements.run_insert_statement("INSERT INTO comment(content, user_id, tweet_id) VALUES(?, ?, ?)", [content, user_id[0][0], tweet_id])
-        # If a new id was not created for the comment, send a server error response
+        # If a new id is not created for the comment, send a server error response
         if(comment_id == None):
             return Response("Failed to create comment.", mimetype="text/plain", status=500)
         # If a new id was created for the comment, try to get the new comment from the database
         else:
             new_comment = dbstatements.run_select_statement("SELECT c.id, c.tweet_id, c.user_id, u.username, c.content, c.created_at FROM users u INNER JOIN comment c ON c.user_id = u.id WHERE c.id = ?", [comment_id,])
-            # If the new comment was not retrieved from the database, send a server error response
+            # If the new comment is not retrieved from the database, send a server error response
             if(new_comment == None):
                 return Response("Failed to create a comment.", mimetype="text/plain", status=500)
-            # If the new comment was retrieved from the database, send the new comment to the user
+            # If the new comment is retrieved from the database, send the new comment to the user as a dictionary
             else:
                 user_comment = {
                     'commentId': new_comment[0][0],
@@ -48,6 +52,6 @@ def post_comment():
                 user_comment_json = json.dumps(user_comment, default=str)
                 # Send a client success response with the new comment
                 return Response(user_comment_json, mimetype="application/json", status=201)
-    # If the user id was not retrieved from the database, send a server error response
+    # If the user id is not retrieved from the database, send a server error response
     else:
         return Response("User is not logged in.", mimetype="text/plain", status=500)

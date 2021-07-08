@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import request, Response
 import traceback
 import dbstatements
 import json
@@ -10,6 +10,10 @@ def update_tweet():
         login_token = request.json['loginToken']
         tweet_id = int(request.json['tweetId'])
         content = request.json['content']
+        
+        # If the user sends a tweet without content, send a client error response
+        if(content == ''):
+            return Response("Invalid tweet.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
@@ -22,7 +26,7 @@ def update_tweet():
     # Trying to update the user's tweet with the login token, tweet id and content
     row_count = dbstatements.run_update_statement("UPDATE user_session us INNER JOIN tweet t ON t.user_id = us.user_id SET t.content = ? WHERE us.token = ? AND t.id = ?", [content, login_token, tweet_id])
 
-    # If the user's tweet got updated, send the updated tweet
+    # If the user's tweet got updated, send the updated tweet as a dictionary
     if(row_count == 1):
         tweet = {
             'tweetId': tweet_id,

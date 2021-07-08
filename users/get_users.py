@@ -1,10 +1,11 @@
-from flask import Flask, request, Response
+from flask import request, Response
 import traceback
 import dbstatements
 import json
 
 # Creating a function to get all users or one user from the database
 def get_users():
+    # Trying to get the user's id
     try:
         user_id = request.args.get('userId')
         # If the user id is valid, convert it into an integer
@@ -28,17 +29,17 @@ def get_users():
         print("An error has occured.")
         return Response("Failed to get users.", mimetype="text/plain", status=400)
 
-    # If a user id is not sent, send all users back
+    # If a user id is not sent, return all users
     if(user_id == None):
         users = dbstatements.run_select_statement("SELECT id, email, username, bio, birthdate, image_url FROM users", [])
-    # If a user id is send, send one user back
+    # If a user id is send, return one user
     else:
-        users = dbstatements.run_select_statement("SELECT id, email, username, bio, birthdate, image_url FROM users WHERE id = ?", [user_id])
+        users = dbstatements.run_select_statement("SELECT id, email, username, bio, birthdate, image_url FROM users WHERE id = ?", [user_id,])
 
-    # If the database does not return all users, send a server error response
-    if(get_users == None):
-        return Response("Failed to retrieve all users.", mimetype="application/json", status=500)
-    # If the database returns all users, send all users as a list of dictionaries
+    # If the database does not return users, send a server error response
+    if(users == None):
+        return Response("Failed to return data.", mimetype="application/json", status=500)
+    # If the database returns users, send users as a list of dictionaries
     else:
         users_list = []
         for user in users:
