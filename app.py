@@ -138,20 +138,25 @@ def call_search_users():
     return search_by_username.search_by_username()
 
 # Creating a mode
+# If more than one argument is passed, set the second argument as the mode
 if(len(sys.argv) > 1):
     mode = sys.argv[1]
+# If no mode is passed, print a message and exit the application
 else:
     print("No mode argument, please pass a mode argument when invoking the file")
     exit()
 
 # Checking which mode is used
+# If the application runs in "production" mode, import bjoern
 if(mode == "production"):
     import bjoern  # type: ignore
     bjoern.run(app, "0.0.0.0", 5001)
+# If the application runs in "testing" mode, import CORS with the debug mode turned on
 elif(mode == "testing"):
     from flask_cors import CORS
     CORS(app)
     app.run(debug=True)
+# If the application is not passed a valid mode, print a message and exit the application
 else:
     print("Invalid mode, please select either 'production' or 'testing'")
     exit()
