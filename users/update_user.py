@@ -31,7 +31,7 @@ def update_user():
     data = []
     # The following if statements have the same comments applied to them:
     # If the user changes one of their information, add their information to the UPDATE query as a column and append the column value to the list
-    if(email != None and username != ''):
+    if(email != None and email != ''):
         sql += " u.email = ?,"
         data.append(email)
     if(username != None and username != ''):
@@ -46,13 +46,13 @@ def update_user():
         sql += " u.password = ?, u.salt = ?,"
         data.append(password)
         data.append(salt)
-    if(bio != None and password != ''):
+    if(bio != None and bio != ''):
         sql += " u.bio = ?,"
         data.append(bio)
-    if(birthdate != None and password != ''):
+    if(birthdate != None and birthdate != ''):
         sql += " u.birthdate = ?,"
         data.append(birthdate)
-    if(image_url != None and password != ''):
+    if(image_url != None and image_url != ''):
         sql += " u.image_url = ?,"
         data.append(image_url)
 
