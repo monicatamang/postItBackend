@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 5.5.62, for Win64 (AMD64)
 --
--- Host: localhost    Database: post_it
+-- Host: 34.136.217.246    Database: post_it
 -- ------------------------------------------------------
--- Server version	5.5.5-10.5.10-MariaDB
+-- Server version	5.5.5-10.4.18-MariaDB-1:10.4.18+maria~stretch
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -33,7 +33,7 @@ CREATE TABLE `comment` (
   KEY `comment_FK_1` (`tweet_id`),
   CONSTRAINT `comment_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `comment_FK_1` FOREIGN KEY (`tweet_id`) REFERENCES `tweet` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES ('Hi Emily, it\'s nice to meet you!','2021-07-07 19:53:55',44,49,50),('Welcome to Post It, Emily!','2021-07-07 19:54:25',45,49,51);
+INSERT INTO `comment` VALUES ('Hi Emily, it\'s nice to meet you!','2021-07-07 19:53:55',44,49,50),('Welcome to Post It, Emily!','2021-07-07 19:54:25',45,49,51),('Good luck on your finals, William!','2021-07-09 17:50:42',45,53,54),('I would love to connect with you, Rebecca! Here\'s a link to my LinkedIn: www.linkedin.com/in/monicatamang/','2021-07-09 17:58:23',43,54,55),('Feel free to connect with me on LinkedIn: www.linkedin.com/in/williammurdoch. Look forward to staying connected','2021-07-09 18:01:31',44,54,56),('Congratulations, Rebecca! So happy for you!','2021-07-09 18:13:18',43,56,57),('Congratulations, Rebecca','2021-07-09 18:14:33',44,56,58);
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,7 +64,7 @@ CREATE TABLE `comment_like` (
   KEY `comment_likes_FK_1` (`comment_id`),
   CONSTRAINT `comment_likes_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `comment_likes_FK_1` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +73,7 @@ CREATE TABLE `comment_like` (
 
 LOCK TABLES `comment_like` WRITE;
 /*!40000 ALTER TABLE `comment_like` DISABLE KEYS */;
-INSERT INTO `comment_like` VALUES (43,50,20,'2021-07-07 19:55:57'),(43,51,21,'2021-07-07 19:56:01');
+INSERT INTO `comment_like` VALUES (43,50,20,'2021-07-07 19:55:57'),(43,51,21,'2021-07-07 19:56:01'),(44,54,24,'2021-07-09 18:02:19'),(45,58,25,'2021-07-09 18:15:09'),(45,57,26,'2021-07-09 18:15:11');
 /*!40000 ALTER TABLE `comment_like` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +95,7 @@ CREATE TABLE `follow` (
   CONSTRAINT `follow_FK` FOREIGN KEY (`follower_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `follow_FK_1` FOREIGN KEY (`follow_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `follow_check` CHECK (`follower_id` <> `follow_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,7 +104,7 @@ CREATE TABLE `follow` (
 
 LOCK TABLES `follow` WRITE;
 /*!40000 ALTER TABLE `follow` DISABLE KEYS */;
-INSERT INTO `follow` VALUES (43,44,26,'2021-07-07 19:56:34'),(43,45,27,'2021-07-07 19:56:39'),(44,43,28,'2021-07-07 19:57:00'),(44,45,29,'2021-07-07 19:57:04'),(45,43,30,'2021-07-07 19:57:16'),(45,44,31,'2021-07-07 19:57:19');
+INSERT INTO `follow` VALUES (43,44,26,'2021-07-07 19:56:34'),(44,43,28,'2021-07-07 19:57:00'),(44,45,29,'2021-07-07 19:57:04'),(45,43,30,'2021-07-07 19:57:16'),(45,44,31,'2021-07-07 19:57:19'),(43,45,35,'2021-07-09 17:22:37');
 /*!40000 ALTER TABLE `follow` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,7 +123,7 @@ CREATE TABLE `tweet` (
   PRIMARY KEY (`id`),
   KEY `tweet_FK` (`user_id`),
   CONSTRAINT `tweet_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +132,7 @@ CREATE TABLE `tweet` (
 
 LOCK TABLES `tweet` WRITE;
 /*!40000 ALTER TABLE `tweet` DISABLE KEYS */;
-INSERT INTO `tweet` VALUES ('Hi everyone, I\'m Emily! It\'s my first time being on this platform and I\'m super excited to expand my network and make new connections!','2021-07-07 19:51:20',43,49);
+INSERT INTO `tweet` VALUES ('Hi everyone, I\'m Emily! It\'s my first time being on this platform and I\'m super excited to expand my network and make new connections!','2021-07-07 19:51:20',43,49),('Last day of finals!','2021-07-09 17:47:29',44,53),('Hi everyone! I\'m currently in my final year of Chemistry and looking to expand my network on LinkedIn. Does anyone want to connect on LinkedIn?','2021-07-09 17:54:17',45,54),('First day of my nursing practicum! Nervous but excited!!!','2021-07-09 18:05:31',43,55),('Got accepted into the Masters of Science in Chemistry program!!!!!!!!!!!!!!!','2021-07-09 18:12:07',45,56);
 /*!40000 ALTER TABLE `tweet` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,7 +154,7 @@ CREATE TABLE `tweet_like` (
   KEY `tweet_likes_FK_1` (`tweet_id`),
   CONSTRAINT `tweet_likes_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tweet_likes_FK_1` FOREIGN KEY (`tweet_id`) REFERENCES `tweet` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -163,7 +163,7 @@ CREATE TABLE `tweet_like` (
 
 LOCK TABLES `tweet_like` WRITE;
 /*!40000 ALTER TABLE `tweet_like` DISABLE KEYS */;
-INSERT INTO `tweet_like` VALUES (44,49,18,'2021-07-07 19:55:16'),(45,49,19,'2021-07-07 19:55:30');
+INSERT INTO `tweet_like` VALUES (44,49,18,'2021-07-07 19:55:16'),(45,49,19,'2021-07-07 19:55:30'),(45,53,21,'2021-07-09 17:50:27'),(43,54,22,'2021-07-09 17:57:15'),(44,54,23,'2021-07-09 18:00:14'),(43,53,24,'2021-07-09 18:06:03'),(45,55,25,'2021-07-09 18:07:45'),(43,56,26,'2021-07-09 18:12:56'),(44,56,27,'2021-07-09 18:14:17');
 /*!40000 ALTER TABLE `tweet_like` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,7 +182,7 @@ CREATE TABLE `user_session` (
   UNIQUE KEY `user_session_UN` (`token`),
   KEY `user_session_FK` (`user_id`),
   CONSTRAINT `user_session_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,7 +191,6 @@ CREATE TABLE `user_session` (
 
 LOCK TABLES `user_session` WRITE;
 /*!40000 ALTER TABLE `user_session` DISABLE KEYS */;
-INSERT INTO `user_session` VALUES (43,'dycPfY6ws154o6iB1p5P0Jfvb_oqmllgAYEdUp94N_JHF3BN1Y1d1alF8vdvApiru-XNSO6awGhhNlIy',81),(44,'dq7vgCabdUcCicO67DyHLU6wH3EjnHBdNw_QM3WzpzYkosOuj1n08tUym8A9zu5Ip0XO7fpVx3Uj84dW',82),(45,'_p5w5dNvFurRsxhFVAX2T2Z9KshBU31PQdOPkfRFn_vrMy8jt9E4tXd42Q4Ehq9It1Wc4jvMYFZEdVzi',83);
 /*!40000 ALTER TABLE `user_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,7 +215,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `users_UN_1` (`username`),
   UNIQUE KEY `users_UN_2` (`email`),
   CONSTRAINT `users_check` CHECK (char_length(`password`) > 12)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -242,4 +241,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-07-07 19:58:26
+-- Dump completed on 2021-07-09 12:37:08
