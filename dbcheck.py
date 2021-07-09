@@ -11,10 +11,11 @@ def close_db_connection_and_cursor(conn, cursor):
 
 # Check if the database connection and cursor is opened
 def check_db_connection_and_cursor(conn, cursor):
-    # If the database connection is still open, close all resources
+    # If the database connection is still open, close all resources and return False
     if(conn == None or cursor == None):
         print("An error has occured in the database.")
         dbconnect.close_cursor(cursor)
         dbconnect.close_db_connection(conn)
         return False
+    # If the database connection is not open, return True
     return True

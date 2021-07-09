@@ -14,8 +14,8 @@ def like_tweet():
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Invalid login token and/or tweet id.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
     # Trying to get the user's id
     user_id = dbstatements.run_select_statement("SELECT user_id FROM user_session WHERE token = ?", [login_token,])

@@ -22,14 +22,14 @@ def create_user():
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Failed to create user.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
     # If the username, email, password or birthdate is not received, send a client error response
     if(username == None or email == None or password == None or birthdate == None):
         return Response("Invalid Data.", mimetype="text/plain", status=400)
 
-    # Hashing and salting the user's password
+    # Salting and hashing the user's password
     salt = dbsalt.create_salt()
     password = salt + password
     password = hashlib.sha512(password.encode()).hexdigest()
@@ -39,7 +39,7 @@ def create_user():
 
     # If user's id is not created, send a server error response
     if(user_id == None):
-        return Response("Database Error. Failed to create a user.", mimetype="text/plain", status=500)
+        return Response("Failed to create a user.", mimetype="text/plain", status=500)
     # If the user's id is created, create a token 
     else:
         token = user_token.get_user_token(user_id)
@@ -56,7 +56,7 @@ def create_user():
             }
             # Convert data to JSON
             user_data_json = json.dumps(user_data, default=str)
-            # Send a client success response
+            # Send a client success response with the JSON data
             return Response(user_data_json, mimetype="application/json", status=201)
         # If the token is not created, send a server error response
         else:

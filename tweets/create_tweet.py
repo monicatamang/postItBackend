@@ -11,7 +11,7 @@ def post_tweet():
         content = request.json['content']
 
         # If the user creates a tweet without content, send a client error response
-        if(content == ''):
+        if(login_token == "" or content == ""):
             return Response("Invalid tweet.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
@@ -20,21 +20,21 @@ def post_tweet():
     except:
         traceback.print_exc()
         print("An error has occured.")
-        return Response("Invalid login token and/or tweet content.", mimetype="text/plain", status=400)
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
     
-    # Validating the user's login token
-    check_user_login = dbstatements.run_select_statement("SELECT user_id FROM user_session WHERE token = ?", [login_token,])
+    # Getting the user's id from the database
+    user_id = dbstatements.run_select_statement("SELECT user_id FROM user_session WHERE token = ?", [login_token,])
 
-    # If the user's login token is valid, create a new tweet
-    if(len(check_user_login) == 1):
-        tweet_id = dbstatements.run_insert_statement("INSERT INTO tweet(content, user_id) VALUES(?, ?)", [content, check_user_login[0][0]])
+    # If the user's id is retrieved from the database, create a new tweet
+    if(len(user_id) == 1):
+        tweet_id = dbstatements.run_insert_statement("INSERT INTO tweet(content, user_id) VALUES(?, ?)", [content, user_id[0][0]])
         # If a new tweet id is not created, send a server error response
         if(tweet_id == None):
             return Response("Failed to create tweet.", mimetype="text/plain", status=500)
         # If a new tweet id is created, get the new tweet from the database
         else:
             get_new_tweet = dbstatements.run_select_statement("SELECT t.id, u.id, u.username, u.image_url, t.content, t.created_at FROM users u INNER JOIN tweet t ON t.user_id = u.id WHERE t.id = ?", [tweet_id,])
-            # If the new tweet is retrieved from the database, send the new tweet to the user
+            # If the new tweet is retrieved from the database, return the new tweet as a dictionary
             if(len(get_new_tweet) == 1):
                 new_tweet = {
                     'tweetId': get_new_tweet[0][0],
@@ -51,6 +51,6 @@ def post_tweet():
             # If the new tweet is not retrieved from the database, send a server error response
             else:
                 return Response("Failed to create tweet.", mimetype="text/plain", status=500)
-    # If the user's login token is not valid, send a server error response
+    # If the user's id is not retrieved from the database, send a server error response
     else:
-        return Response("User not logged in.", mimetype="text/plain", status=500)
+        return Response("User not logged in.", mimetype="text/plain", status=403)

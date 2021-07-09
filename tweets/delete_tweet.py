@@ -14,10 +14,10 @@ def delete_tweet():
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Invalid user id and/or tweet id.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
-    # Trying to delete the user's tweet with the login token and tweet id
+    # Checking to see if the user's tweet is deleted given the login token and tweet id
     row_count = dbstatements.run_delete_statement("DELETE t FROM user_session us INNER JOIN tweet t ON t.user_id = us.user_id WHERE us.token = ? AND t.id = ?", [login_token, tweet_id])
     # If the tweet was deleted, send a client success response
     if(row_count == 1):

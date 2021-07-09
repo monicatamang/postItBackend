@@ -12,7 +12,7 @@ def update_tweet():
         content = request.json['content']
         
         # If the user sends a tweet without content, send a client error response
-        if(content == ''):
+        if(login_token == "" or content == ""):
             return Response("Invalid tweet.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
@@ -20,13 +20,13 @@ def update_tweet():
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Invalid user id and/or tweet id.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
-    # Trying to update the user's tweet with the login token, tweet id and content
+    # Checking to see if the user's tweet is updated
     row_count = dbstatements.run_update_statement("UPDATE user_session us INNER JOIN tweet t ON t.user_id = us.user_id SET t.content = ? WHERE us.token = ? AND t.id = ?", [content, login_token, tweet_id])
 
-    # If the user's tweet got updated, send the updated tweet as a dictionary
+    # If the user's tweet is updated, send the updated tweet as a dictionary
     if(row_count == 1):
         tweet = {
             'tweetId': tweet_id,
@@ -34,8 +34,8 @@ def update_tweet():
         }
         # Convert data to JSON
         tweet_json = json.dumps(tweet, default=str)
-        # Send a client success response
+        # Send a client success response with the JSON data
         return Response(tweet_json, mimetype="application/json", status=200)
-    # If the user's tweet did not get updated, send a server error response
+    # If the user's tweet is not updated, send a server error response
     else:
         return Response("Failed to update tweet.", mimetype="text/plain", status=500)

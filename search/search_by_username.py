@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import request, Response
 import traceback
 import dbstatements
 import json
@@ -15,7 +15,7 @@ def search_by_username():
     except:
         traceback.print_exc()
         print("An error has occured.")
-        return Response("Invalid login token and/or tweet id.", mimetype="text/plain", status=400)
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
     # If the user doesn't send any data, i.e., if the user doesn't type anything into the search bar, send all users
     if(search_input == None):

@@ -16,18 +16,18 @@ def delete_user():
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Invalid token and/or password.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
-    # Trying to get the user's email from the database given the login token
+    # Getting the user's email from the database given the login token
     email = dbstatements.run_select_statement("SELECT email FROM users u INNER JOIN user_session us ON us.user_id = u.id WHERE us.token = ?", [token,])
-    # If the email is retrieved from the database, get the user's salt from the database and hash the password
+    # If the email is retrieved from the database, get the user's salt from the database
     if(len(email) == 1):
         salt = dbsalt.get_salt(email[0][0])
         # If the user's salt is not retrieved from the database, send a server error response
         if(salt == None):
             return Response("Failed to delete user.", mimetype="text/plain", status=500)
-        # If the user's salt is retrieved from the database, hash and salt the user's password
+        # If the user's salt is retrieved from the database, salt and hash the user's password
         else:
             password = salt + password
             password = hashlib.sha512(password.encode()).hexdigest()

@@ -15,7 +15,7 @@ def get_users():
             db_user_id = dbstatements.run_select_statement("SELECT id FROM users WHERE id = ?", [user_id,])
             # If the user does not exist in the database, send a client error response
             if(len(db_user_id) != 1):
-                return Response("User does not exist.", mimetype="text/plain", status=400)
+                return Response("User does not exist.", mimetype="text/plain", status=401)
     except TypeError:
         traceback.print_exc()
         print("Data Error. Invalid data type sent to the database.")
@@ -26,13 +26,13 @@ def get_users():
         return Response("Invalid id.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Failed to get users.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
-    # If a user id is not sent, return all users
+    # If the user does not send a user id, return all users
     if(user_id == None):
         users = dbstatements.run_select_statement("SELECT id, email, username, bio, birthdate, image_url FROM users", [])
-    # If a user id is send, return one user
+    # If the user does send a user id, return one user with that user id
     else:
         users = dbstatements.run_select_statement("SELECT id, email, username, bio, birthdate, image_url FROM users WHERE id = ?", [user_id,])
 
@@ -54,5 +54,5 @@ def get_users():
             users_list.append(each_user)
         # Convert data to JSON
         users_list_json = json.dumps(users_list, default=str)
-        # Send a client success response
+        # Send a client success response with the JSON data
         return Response(users_list_json, mimetype="application/json", status=200)

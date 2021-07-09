@@ -12,18 +12,14 @@ def get_all_follows():
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
-    except TypeError:
-        traceback.print_exc()
-        print("Data Error. Invalid data type sent to the database.")
-        return Response("Invalid data.", mimetype="text/plain", status=400)
     except ValueError:
         traceback.print_exc()
         print("Invalid data was sent to the database.")
         return Response("Invalid data.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Failed to follow user.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
     # Checking to see if the user exists
     db_user_id = dbstatements.run_select_statement("SELECT id FROM users WHERE id = ?", [user_id,])
@@ -32,7 +28,6 @@ def get_all_follows():
     if(len(db_user_id) == 1):
         # Getting all the user's follows
         follows = dbstatements.run_select_statement("SELECT u.id, u.email, u.username, u.bio, u.birthdate, u.image_url FROM users u INNER JOIN follow f ON u.id = f.follow_id WHERE f.follower_id = ?", [user_id,])
-        
         # If the list of follows is not found in the database, send a server error response
         if(follows == None):
             return Response("Failed to get all follows.", mimetype="text/plain", status=500)
@@ -55,4 +50,4 @@ def get_all_follows():
             return Response(user_follows_json, mimetype="application/json", status=200)
     # If the user does not exist in the database, send a client error response
     else:
-        return Response("User does not exist.", mimetype="text/plain", status=400)
+        return Response("User does not exist.", mimetype="text/plain", status=401)

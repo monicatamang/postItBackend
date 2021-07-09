@@ -8,7 +8,7 @@ def get_comment_likes():
     # Trying to get the user's comment id
     try:
         comment_id = request.args.get('commentId')
-        # If the user sends a comment id, convert into an integer
+        # If the user sends a comment id, convert it to an integer
         if(comment_id != None):
             comment_id = int(comment_id)
             # Checking to see if the tweet exists in the database
@@ -20,18 +20,14 @@ def get_comment_likes():
         traceback.print_exc()
         print("Key Error. Incorrect or missing key.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
-    except TypeError:
-        traceback.print_exc()
-        print("Data Error. Invalid data type sent to the database.")
-        return Response("Invalid data.", mimetype="text/plain", status=400)
     except ValueError:
         traceback.print_exc()
         print("Invalid data was sent to the database.")
         return Response("Invalid data.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Invalid comment id.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
     # If the user doesn't send a comment id, get all comment likes
     if(comment_id == None):
@@ -61,5 +57,5 @@ def get_comment_likes():
             comment_likes_list.append(each_comment_like)
         # Convert data to JSON
         comment_likes_json = json.dumps(comment_likes_list, default=str)
-        # Send a client success response with the comment likes
+        # Send a client success response with the JSON data
         return Response(comment_likes_json, mimetype="application/json", status=200)

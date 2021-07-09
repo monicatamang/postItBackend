@@ -7,7 +7,7 @@ import hashlib
 
 # Creating a function to update a user
 def update_user():
-    # Receiving the user's data
+    # Trying to get the user's data
     try:
         token = request.json['loginToken']
         username = request.json.get('username')
@@ -16,96 +16,63 @@ def update_user():
         bio = request.json.get('bio')
         birthdate = request.json.get('birthdate')
         image_url = request.json.get('imageUrl')
-
-        # If the user does not send the token, username, email, password or birthdate, send a client error response
-        if(token == None and username == None and email == None and password == None and birthdate == None):
-            return Response("Invalid data. Failed to update user.", mimetype="application/json", status=400)
     except KeyError:
         traceback.print_exc()
         print("Key Error. Incorrect Key name of data.")
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
-    except TypeError:
-        traceback.print_exc()
-        print("Data Error. Invalid data type sent to the database.")
-        return Response("Invalid data.", mimetype="text/plain", status=400)
-    except ValueError:
-        traceback.print_exc()
-        print("Invalid data was sent to the database.")
-        return Response("Invalid data.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Failed to update user.", mimetype="text/plain", status=400)
-
-    # Getting the user's original token, bio, birthdate and image from the database
-    db_records = dbstatements.run_select_statement("SELECT us.user_id, u.bio, u.birthdate, u.image_url FROM users u INNER JOIN user_session us ON us.user_id = u.id WHERE token = ?", [token,])
-
-    # If the token matches with the database records, get the user's data
-    if(len(db_records) == 1):
-        user_id = db_records[0][0]
-        # If the user's bio, birthdate or image url are not updated, set it as the user's original bio, birthdate or image url
-        if(bio == None or bio == ""):
-            bio = db_records[0][1]
-        if(birthdate == None or birthdate == ""):
-            birthdate = db_records[0][2]
-        if(image_url == None or image_url == ""):
-            image_url = db_records[0][3]
-    # If the token does not match, send a server error response
-    else:
-        return Response("Failed to update user.", mimetype="text/plain", status=500)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
     
     # Updating the user based on the data sent
-    # Initializing an empty list and UPDATE query
+    # Initializing the UPDATE query and an empty list to store the values
+    sql = "UPDATE users u INNER JOIN user_session us ON u.id = us.user_id SET"
     data = []
-    sql = "UPDATE users SET"
     # The following if statements have the same comments applied to them:
-    # If the user changes their one of their information, add their information to the UPDATE query as a column and append the column value to the list
-    if(email != None):
-        sql += " email = ?,"
+    # If the user changes one of their information, add their information to the UPDATE query as a column and append the column value to the list
+    if(email != None and username != ''):
+        sql += " u.email = ?,"
         data.append(email)
-    if(username != None):
-        sql += " username = ?,"
+    if(username != None and username != ''):
+        sql += " u.username = ?,"
         data.append(username)
-    if(password != None):
+    if(password != None and password != ''):
         # If the user wants to change their password, replace the user's existing salt with a new generated salt in the database
         salt = dbsalt.create_salt()
-        row_count = dbstatements.run_update_statement("UPDATE users u INNER JOIN user_session us ON us.user_id = u.id SET u.salt = ? WHERE us.token = ?", [salt, token])
-        # If the user's salt is updated, hash and salt the new password
-        if(row_count == 1):
-            password = salt + password
-            password = hashlib.sha512(password.encode()).hexdigest()
-            sql += " password = ?,"
-            data.append(password)
-        # If the user's salt is not updated, send a server error response
-        else:
-            return Response("Failed to update user.", mimetype="text/plain", status=500)
-    if(bio != None):
-        sql += " bio = ?,"
+        # Salt and hash the new password
+        password = salt + password
+        password = hashlib.sha512(password.encode()).hexdigest()
+        sql += " u.password = ?, u.salt = ?,"
+        data.append(password)
+        data.append(salt)
+    if(bio != None and password != ''):
+        sql += " u.bio = ?,"
         data.append(bio)
-    if(birthdate != None):
-        sql += " birthdate = ?,"
+    if(birthdate != None and password != ''):
+        sql += " u.birthdate = ?,"
         data.append(birthdate)
-    if(image_url != None):
-        sql += " image_url = ?,"
+    if(image_url != None and password != ''):
+        sql += " u.image_url = ?,"
         data.append(image_url)
 
     # Removing the comma at the end of the query
     sql = sql[:-1]
-    # Adding the where clause
-    sql += " WHERE id = ?"
-    # Appending the user id
-    data.append(user_id)
+    # Adding the where clause to the query
+    sql += " WHERE us.token = ?"
+    # Appending the token to the list
+    data.append(token)
 
     # Checking to see if the user's data has been udpated in the database
     row_count = dbstatements.run_update_statement(sql, data)
     
-    # If the user is updated, get the update data from the database
+    # If the user is updated, get the updated data from the database
     if(row_count == 1):
-        db_updated_records = dbstatements.run_select_statement("SELECT id, email, username, bio, birthdate, image_url FROM users WHERE id = ?", [user_id,])
+        db_updated_records = dbstatements.run_select_statement("SELECT u.id, u.email, u.username, u.bio, u.birthdate, u.image_url FROM users u INNER JOIN user_session us ON us.user_id = u.id WHERE us.token = ?", [token,])
         # If the updated data is not retrieved from the database, send a server error response
         if(db_updated_records == None):
-            return Response("Failed to update user.", mimetype="application/json", status=500)
-        # If the updated data is retreived from the database, send the updated data as a dictionary
+            return Response("Database Error. Please refresh the page.", mimetype="application/json", status=500)
+        # If the updated data is retreived from the database, return the updated data as a dictionary
         else:
             updated_data = {
                 'userId': db_updated_records[0][0],
@@ -117,7 +84,7 @@ def update_user():
             }
             # Convert updated data into JSON
             updated_data_json = json.dumps(updated_data, default=str)
-            # Send client success response
+            # Send client success response with the JSON data
             return Response(updated_data_json, mimetype="application/json", status=200)
     # If the user is not updated, send a server error response
     else:

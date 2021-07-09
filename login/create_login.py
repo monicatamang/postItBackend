@@ -18,8 +18,8 @@ def login_user():
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Invalid email and/or password.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
     # If the user did not send an eamil or password, send a server error response
     if(email == "" or password == ""):

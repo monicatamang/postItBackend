@@ -43,16 +43,21 @@ def close_cursor(cursor):
     # Trying to close the database cursor
     try:
         cursor.close()
+        # If the cursor closes, return True
         return True
+    # If the cursor is not able to be closed, catch errors with exceptions and return False
     except mariadb.InternalError:
         traceback.print_exc()
         print("Internal errors detected in the database. Failed to create a cursor.")
+        return False
     except mariadb.OperationalError:
         traceback.print_exc()
         print("Operational errors detected in the database connection. Failed to create a cursor.")
+        return False
     except mariadb.DatabaseError:
         traceback.print_exc()
         print("Errors detected with the current connection. Failed to close cursor.")
+        return False
     except:
         traceback.print_exc()
         print("An error has occured. Failed to close cursor.")
@@ -66,13 +71,17 @@ def close_db_connection(conn):
     # Trying to close the database connection
     try:
         conn.close()
+        # If the database connection is closed, return True
         return True
+    # If the database connection cannot be closed, return False
     except mariadb.OperationalError:
+        traceback.print_exc()
         print("Optional errors detected in the database. Failed to close the connection.")
-        traceback.print_exc()
+        return False
     except mariadb.DatabaseError:
-        print("Errored detected in the database. Failed to close the connection.")
         traceback.print_exc()
+        print("Errored detected in the database. Failed to close the connection.")
+        return False
     except:
         print("An error has occured. Failed to close database connection.")
         traceback.print_exc()

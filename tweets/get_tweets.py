@@ -16,7 +16,7 @@ def get_tweets():
             db_user_id = dbstatements.run_select_statement("SELECT id FROM users WHERE id = ?", [user_id,])
             # If the user does not exist in the database, send a client error response
             if(len(db_user_id) != 1):
-                return Response("User does not exist.", mimetype="text/plain", status=400)
+                return Response("User does not exist.", mimetype="text/plain", status=401)
         # If the user sends a tweet id, convert it into an integer
         if(tweet_id != None):
             tweet_id = int(tweet_id)
@@ -35,7 +35,7 @@ def get_tweets():
     except:
         traceback.print_exc()
         print("An error has occured.")
-        return Response("Invalid user id and/or tweet id.", mimetype="text/plain", status=400)
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
     # If the user does not send a user id or tweet id, get all tweets from the database
     if(user_id == None and tweet_id == None):

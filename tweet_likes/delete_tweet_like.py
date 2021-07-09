@@ -14,8 +14,8 @@ def unlike_tweet():
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Invalid login token and/or tweet id.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
     # Trying to delete a tweet like with the login token and tweet id
     row_count = dbstatements.run_delete_statement("DELETE tl FROM user_session us INNER JOIN tweet_like tl ON tl.user_id = us.user_id WHERE us.token = ? AND tl.tweet_id = ?", [login_token, tweet_id])

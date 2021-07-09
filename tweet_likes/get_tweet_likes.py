@@ -30,8 +30,8 @@ def get_tweet_likes():
         return Response("Invalid data.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Invalid user id and/or tweet id.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
     # If the tweet id is not given, send all tweet likes on all tweets
     if(tweet_id == None):

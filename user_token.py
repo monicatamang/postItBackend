@@ -6,19 +6,19 @@ import dbcheck
 import secrets
 
 def get_user_token(user_id):
-    # Open database and create a cursor
+    # Opening the database and create a cursor
     conn = dbconnect.open_db_connection()
     cursor = dbconnect.create_db_cursor(conn)
-    # Initalize the result to None and create a token
+    # Initalizing the result to None and create a token
     result = None
     token = secrets.token_urlsafe(60)
 
-    # Check if the database connection is still open
+    # Checking to see if the database connection is still open
     check_database = dbcheck.check_db_connection_and_cursor(conn, cursor)
     if(check_database == False):
         return Response("Database connection failed.", mimetype="text/plain", status=500)
 
-    # Try to to insert the new token into the database
+    # Trying to insert the new token into the database
     try:
         cursor.execute("INSERT INTO user_session(user_id, token) VALUES(?, ?)", [user_id, token])
         conn.commit()

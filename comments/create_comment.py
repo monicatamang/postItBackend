@@ -11,8 +11,8 @@ def post_comment():
         tweet_id = int(request.json['tweetId'])
         content = request.json['content']
 
-        # If the user creates a comment without content, send a client error response
-        if(content == ''):
+        # If the user sends a login token as an empty string or creates a comment without content, send a client error response
+        if(login_token == "" or content == ""):
             return Response("Invalid data.", mimetype="text/plain", status=400)
     except KeyError:
         traceback.print_exc()
@@ -20,8 +20,8 @@ def post_comment():
         return Response("Incorrect or missing key.", mimetype="text/plain", status=400)
     except:
         traceback.print_exc()
-        print("An error has occured.")
-        return Response("Invalid login token and/or tweet content.", mimetype="text/plain", status=400)
+        print("An error has occurred.")
+        return Response("An error has occurred.", mimetype="text/plain", status=400)
 
     # Trying to get the user's id based on the login token given
     user_id = dbstatements.run_select_statement("SELECT user_id FROM user_session WHERE token = ?", [login_token,])
@@ -50,8 +50,8 @@ def post_comment():
                 }
                 # Convert data to JSON
                 user_comment_json = json.dumps(user_comment, default=str)
-                # Send a client success response with the new comment
+                # Send a client success response with the JSON data
                 return Response(user_comment_json, mimetype="application/json", status=201)
     # If the user id is not retrieved from the database, send a server error response
     else:
-        return Response("User is not logged in.", mimetype="text/plain", status=500)
+        return Response("User is not logged in.", mimetype="text/plain", status=403)
